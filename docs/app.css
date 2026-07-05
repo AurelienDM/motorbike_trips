@@ -730,12 +730,184 @@ main .panel p[style*="color"] {
   color: var(--muted);
 }
 
-.today-map {
-  height: clamp(230px, 56vw, 460px);
+.today-card {
+  gap: 14px;
 }
 
-.today-grid {
-  grid-template-columns: 1fr;
+.today-hero {
+  position: relative;
+  min-height: 360px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--surface-soft);
+  box-shadow: var(--shadow);
+}
+
+.today-map,
+.today-hero-map {
+  height: 100%;
+  min-height: 360px;
+  border: 0;
+  border-radius: 0;
+}
+
+.today-hero-copy {
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  bottom: 12px;
+  z-index: 3;
+  padding: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.72);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.84);
+  color: #132019;
+  -webkit-backdrop-filter: blur(16px) saturate(1.25);
+  backdrop-filter: blur(16px) saturate(1.25);
+  box-shadow: 0 14px 32px rgba(19, 32, 25, 0.16);
+}
+
+html[data-theme="night"] .today-hero-copy {
+  border-color: rgba(255, 255, 255, 0.16);
+  background: rgba(7, 16, 11, 0.78);
+  color: var(--text);
+}
+
+.today-hero-copy h3 {
+  font-size: clamp(28px, 7vw, 44px);
+  line-height: 0.98;
+}
+
+.today-stats {
+  margin-top: 0;
+}
+
+.today-actions {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr 1fr;
+  gap: 9px;
+}
+
+.today-actions > * {
+  min-height: 62px;
+}
+
+.today-main-action,
+.today-actions .today-activity {
+  border-radius: 12px;
+  box-shadow: 0 12px 28px rgba(24, 39, 30, 0.1);
+}
+
+.today-actions .today-activity {
+  align-items: center;
+  border: 1px solid rgba(45, 108, 223, 0.32);
+  background: var(--surface-solid);
+  color: var(--text);
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  padding: 10px;
+  text-align: center;
+  text-decoration: none;
+  font-weight: 900;
+}
+
+.today-actions .today-activity small {
+  display: none;
+}
+
+.today-note {
+  margin: 0;
+  padding: 0 2px;
+  color: var(--muted);
+  font-size: 17px;
+}
+
+.today-activities {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 9px;
+}
+
+.today-activity {
+  min-width: 0;
+  display: grid;
+  grid-template-columns: 40px minmax(0, 1fr);
+  align-items: center;
+  gap: 10px;
+  min-height: 78px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--surface-solid);
+  color: var(--text);
+  text-decoration: none;
+}
+
+.today-activity-icon {
+  align-items: center;
+  display: inline-flex;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 11px;
+  background: var(--surface-soft);
+  color: var(--accent);
+}
+
+.today-activity-icon svg {
+  width: 22px;
+  height: 22px;
+}
+
+.today-activity strong,
+.today-activity small {
+  display: block;
+  min-width: 0;
+}
+
+.today-activity strong {
+  font-size: 16px;
+  line-height: 1.1;
+}
+
+.today-activity small {
+  margin-top: 3px;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.today-activity.ride .today-activity-icon {
+  background: rgba(22, 116, 71, 0.12);
+}
+
+.today-activity.fuel .today-activity-icon,
+.today-activity.today-fuel-direct .today-activity-icon {
+  background: rgba(45, 108, 223, 0.1);
+  color: var(--blue);
+}
+
+.today-activity.break .today-activity-icon {
+  background: rgba(245, 182, 66, 0.16);
+  color: #8a5a00;
+}
+
+.today-activity.camp .today-activity-icon {
+  background: rgba(31, 143, 77, 0.12);
+}
+
+.today-secondary {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.today-secondary .mini-link {
+  justify-content: center;
+  min-height: 38px;
 }
 
 .itinerary-summary {
@@ -1424,6 +1596,38 @@ html[data-theme="night"] .fuel-floating-sheet {
     gap: 5px;
     padding: 8px 6px;
   }
+
+  .today-hero,
+  .today-map,
+  .today-hero-map {
+    min-height: 390px;
+  }
+
+  .today-hero-copy {
+    padding: 12px;
+  }
+
+  .today-hero-copy h3 {
+    font-size: 30px;
+  }
+
+  .today-stats {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .today-actions {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .today-main-action,
+  .today-actions .today-activity {
+    min-height: 56px;
+    padding: 8px 5px;
+  }
+
+  .today-activities {
+    grid-template-columns: 1fr;
+  }
 }
 
 @media (max-width: 480px) {
@@ -1488,6 +1692,10 @@ html[data-theme="night"] .fuel-floating-sheet {
     grid-column: 1 / -1;
   }
 
+  .today-stats .metric:nth-child(3) {
+    grid-column: auto;
+  }
+
   .metric {
     padding: 8px;
   }
@@ -1511,6 +1719,26 @@ html[data-theme="night"] .fuel-floating-sheet {
   .action {
     min-height: 50px;
     padding: 8px;
+  }
+
+  .today-card {
+    gap: 12px;
+  }
+
+  .today-hero,
+  .today-map,
+  .today-hero-map {
+    min-height: 400px;
+  }
+
+  .today-hero-copy {
+    left: 10px;
+    right: 10px;
+    bottom: 10px;
+  }
+
+  .today-activity {
+    min-height: 68px;
   }
 
   .bottom-glass-nav {
