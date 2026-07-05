@@ -246,6 +246,8 @@
       more: '<circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/>',
       route: '<circle cx="6" cy="19" r="3"/><path d="M9 19h8.5a3.5 3.5 0 0 0 0-7H6.5a3.5 3.5 0 0 1 0-7H15"/><circle cx="18" cy="5" r="3"/>',
       settings: '<path d="M9.7 3.4c.5-1.9 4.1-1.9 4.6 0a2.1 2.1 0 0 0 3.1 1.3c1.7-1 4.2 1.5 3.2 3.2a2.1 2.1 0 0 0 1.3 3.1c1.9.5 1.9 4.1 0 4.6a2.1 2.1 0 0 0-1.3 3.1c1 1.7-1.5 4.2-3.2 3.2a2.1 2.1 0 0 0-3.1 1.3c-.5 1.9-4.1 1.9-4.6 0a2.1 2.1 0 0 0-3.1-1.3c-1.7 1-4.2-1.5-3.2-3.2a2.1 2.1 0 0 0-1.3-3.1c-1.9-.5-1.9-4.1 0-4.6a2.1 2.1 0 0 0 1.3-3.1c-1-1.7 1.5-4.2 3.2-3.2a2.1 2.1 0 0 0 3.1-1.3Z"/><circle cx="12" cy="12" r="3"/>',
+      sliders: '<path d="M4 21v-7"/><path d="M4 10V3"/><path d="M12 21v-9"/><path d="M12 8V3"/><path d="M20 21v-5"/><path d="M20 12V3"/><path d="M2 14h4"/><path d="M10 8h4"/><path d="M18 16h4"/>',
+      shield: '<path d="M20 13c0 5-3.5 7.5-8 9-4.5-1.5-8-4-8-9V5l8-3 8 3Z"/><path d="m9 12 2 2 4-5"/>',
       sun: '<circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/>',
       target: '<path d="M20 10c0 4.9-8 12-8 12s-8-7.1-8-12a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="3"/>',
       awake: '<path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/>',
@@ -548,30 +550,36 @@
     section.className = "panel app-panel app-view settings-panel";
     section.innerHTML = [
       '<div class="app-panel-head">',
-      '<div><span class="eyebrow">Settings</span><h2>Ride setup</h2></div>',
+      '<div><span class="eyebrow">Setup</span><h2>App controls</h2></div>',
       '</div>',
-      '<div class="settings-grid">',
-      '<div class="settings-group">',
-      '<h3>Display</h3>',
+      '<div class="setup-grid">',
+      '<section class="setup-card">',
+      `<span class="setup-icon">${icon("sun")}</span>`,
+      '<div><h3>Display</h3><p>Switch the road book for daylight, night riding, or system mode.</p></div>',
       '<div class="segmented" role="group" aria-label="Theme">',
       `<button type="button" data-theme-choice="day">${icon("sun")}Day</button>`,
       `<button type="button" data-theme-choice="night">${icon("moon")}Night</button>`,
       '<button type="button" data-theme-choice="auto">Auto</button>',
       '</div>',
-      '</div>',
-      '<div class="settings-group">',
-      '<h3>Bike</h3>',
-      `<button class="action full" type="button" data-keep-awake>${icon("awake")}<span>Keep Screen Awake</span></button>`,
-      '<p id="app-status" class="app-muted">Offline cache ready after first full load.</p>',
-      '</div>',
-      '<div class="settings-group">',
-      '<h3>Route pack</h3>',
-      '<div class="action-grid">',
+      '</section>',
+      '<section class="setup-card">',
+      `<span class="setup-icon">${icon("awake")}</span>`,
+      '<div><h3>Bike screen</h3><p>Useful when the phone is mounted and you are stopped checking the route.</p></div>',
+      `<button class="action primary full" type="button" data-keep-awake>${icon("awake")}<span>Keep Awake</span></button>`,
+      '</section>',
+      '<section class="setup-card">',
+      `<span class="setup-icon">${icon("file")}</span>`,
+      '<div><h3>Route pack</h3><p>Download routepoints for OsmAnd, Garmin, TomTom, Kurviger or Calimoto.</p></div>',
+      '<div class="action-grid setup-actions">',
       `<a class="action" href="gpx/full_trip_routepoints_v3.gpx" download>${icon("file")}<span>Full GPX</span></a>`,
       `<a class="action" href="data/road_book_links_v3.csv" download>${icon("file")}<span>CSV</span></a>`,
       '<a class="action" href="#gpx"><span class="action-letter">i</span><span>GPX Notes</span></a>',
       '</div>',
-      '</div>',
+      '</section>',
+      '<section class="setup-card">',
+      `<span class="setup-icon">${icon("shield")}</span>`,
+      '<div><h3>Offline</h3><p id="app-status" class="app-muted">Core road book files cache after the first full load. Map tiles still depend on network unless opened in your map app offline.</p></div>',
+      '</section>',
       '</div>'
     ].join("");
 
@@ -635,6 +643,83 @@
     ].join("");
   }
 
+  function dayDestination(day) {
+    const last = day.campStops[0]?.name || day.title.split("→").pop() || day.title;
+    return clean(last.replace(/^[•C]\s*/, ""));
+  }
+
+  function routeQuickActions(day) {
+    const actions = [
+      day.google ? actionLink("action primary", day.google, "Maps", "map") : "",
+      actionLink("action fuel-action", fuelMapsLink(), "Fuel", "fuel"),
+      day.camp ? actionLink("action camp-action", day.camp, "Camp", "camp") : "",
+      day.osm ? actionLink("action", day.osm, "OSM", "map") : "",
+      day.gpx ? `<a class="action" href="${htmlEscape(day.gpx)}" download>${icon("file")}<span>GPX</span></a>` : ""
+    ].filter(Boolean);
+    return `<div class="route-actions">${actions.join("")}</div>`;
+  }
+
+  function stopCardsMarkup(stops, emptyText) {
+    if (!stops.length) return `<p class="app-muted">${htmlEscape(emptyText)}</p>`;
+    return stops.slice(0, 6).map((stop) => (
+      `<a class="route-stop-card" target="_blank" rel="noopener" href="${htmlEscape(googleSearchLink(stop.name))}">` +
+      `<strong>${htmlEscape(stop.name)}</strong><span>${htmlEscape(stop.type || "stop")}</span>` +
+      '</a>'
+    )).join("");
+  }
+
+  function campOptions(day) {
+    const options = [];
+    day.campStops.forEach((stop) => {
+      if (!options.some((item) => item.name === stop.name)) {
+        options.push({ name: stop.name, type: stop.type || "Camp / night stop", href: googleSearchLink(stop.name) });
+      }
+    });
+    if (day.night && !options.some((item) => item.name === day.night)) {
+      options.push({ name: day.night, type: "Planned night", href: googleSearchLink(day.night) });
+    }
+    if (day.camp) {
+      options.push({ name: "Official camping page", type: "Booking / campsite info", href: day.camp });
+    }
+    options.push({
+      name: `Camping near ${dayDestination(day)}`,
+      type: "Map search",
+      href: googleSearchLink(`camping near ${dayDestination(day)}`)
+    });
+    return options.slice(0, 5);
+  }
+
+  function campOptionsMarkup(day) {
+    return campOptions(day).map((option) => (
+      `<a class="camp-option" target="_blank" rel="noopener" href="${htmlEscape(option.href)}">` +
+      `<span class="camp-option-icon">${icon("camp")}</span>` +
+      `<span><strong>${htmlEscape(option.name)}</strong><small>${htmlEscape(option.type)}</small></span>` +
+      '</a>'
+    )).join("");
+  }
+
+  function routeDayCard(day) {
+    return [
+      '<article class="route-day-card">',
+      '<div class="route-day-hero">',
+      realMapMarkup(day, { className: "route-day-map" }),
+      '<div class="route-day-copy">',
+      `<div class="app-day-kicker">${htmlEscape(day.label)} / ${htmlEscape(day.meta)}</div>`,
+      `<h3>${htmlEscape(day.title)}</h3>`,
+      `<p>${htmlEscape(day.ridePlan || day.note || "Follow the planned route and keep the day simple.")}</p>`,
+      '</div>',
+      '</div>',
+      `<div class="metric-row route-day-stats">${chipMarkup(day)}</div>`,
+      routeQuickActions(day),
+      '<div class="route-detail-grid">',
+      `<section class="route-detail-card"><span>Fuel stops</span><div class="route-stop-grid">${stopCardsMarkup(day.fuelStops, "No named fuel stop for this day.")}</div></section>`,
+      `<section class="route-detail-card"><span>Breaks</span><div class="route-stop-grid">${stopCardsMarkup(day.breakStops, "Use a quiet scenic stop from the route.")}</div></section>`,
+      `<section class="route-detail-card camps"><span>Camping options</span><div class="camp-option-list">${campOptionsMarkup(day)}</div></section>`,
+      '</div>',
+      '</article>'
+    ].join("");
+  }
+
   function renderToday() {
     const target = document.getElementById("today-card");
     if (!target || !days.length) return;
@@ -682,7 +767,9 @@
       coords: fullCoords,
       osm: openStreetMapRoute(fullCoords)
     };
+    const day = days[currentDay];
     target.innerHTML = [
+      routeDayCard(day),
       '<div class="metric-row itinerary-summary">',
       `<div class="metric"><span>Days</span><b>${days.length}</b></div>`,
       `<div class="metric"><span>Planned km</span><b>${totalKm} km</b></div>`,
@@ -699,7 +786,7 @@
         '</div>',
         '<div class="itinerary-actions">',
         `<button class="mini-link button-link" type="button" data-select-day="${index}" data-go="today">Today</button>`,
-        `<a class="mini-link" href="#${htmlEscape(day.id)}" data-select-day="${index}">Card</a>`,
+        `<button class="mini-link button-link" type="button" data-select-day="${index}" data-go="itinerary">Card</button>`,
         day.google ? `<a class="mini-link" href="${htmlEscape(day.google)}" target="_blank" rel="noopener">Maps</a>` : "",
         '</div>',
         '</article>'
@@ -713,48 +800,98 @@
     const target = document.getElementById("fuel-card");
     if (!target || !days.length) return;
     const day = days[currentDay];
-    const fuelStopCount = day.fuelStops.length;
+    const fuelStops = day.fuelStops.length ? day.fuelStops : [{ name: "Petrol station near me", type: "Map search" }];
     target.innerHTML = [
       `<div class="app-day-kicker">${htmlEscape(day.label)} / ${htmlEscape(day.title)}</div>`,
-      `<div class="fuel-hero"><strong>${htmlEscape(fuelWindows(day))}</strong><span>Scrambler safety range</span></div>`,
-      '<div class="metric-row fuel-metrics">',
-      `<div class="metric"><span>Distance</span><b>${htmlEscape(day.distance || "-")}</b></div>`,
-      `<div class="metric"><span>Named stops</span><b>${fuelStopCount}</b></div>`,
-      `<div class="metric"><span>Rule</span><b>180-200 km</b></div>`,
+      '<div class="fuel-dashboard">',
+      '<div class="fuel-dashboard-main">',
+      `<span class="fuel-dashboard-icon">${icon("fuel")}</span>`,
+      `<strong>${htmlEscape(fuelWindows(day))}</strong>`,
+      '<p>Plan the Scrambler around 180-200 km. Open a map search before leaving the stop.</p>',
       '</div>',
-      `<div class="mini-block full"><span>Plan</span><p>${htmlEscape(day.fuel || "Fuel before 180-200 km and never arrive at camp on reserve.")}</p></div>`,
-      `<div class="mini-block full"><span>Stops</span>${listMarkup(day.fuelStops, "No named fuel stop in the card. Add one before riding this day.")}</div>`,
-      '<div class="nearby-fuel-panel">',
-      '<div class="nearby-head"><span>Fuel map</span></div>',
-      '<div id="nearby-fuel-list" class="nearby-list"></div>',
+      '<div class="fuel-dashboard-actions">',
+      `<a class="action primary" target="_blank" rel="noopener" href="${fuelMapsLink()}">${icon("fuel")}<span>Fuel near me</span></a>`,
+      `<a class="action" target="_blank" rel="noopener" href="${appleFuelMapsLink()}">${icon("map")}<span>Apple Maps</span></a>`,
       '</div>',
-      actionPanel(day, { compact: true, includeCamping: false })
+      '</div>',
+      '<div class="fuel-simple-grid">',
+      `<section class="fuel-simple-card"><span>Distance</span><strong>${htmlEscape(day.distance || "-")}</strong></section>`,
+      `<section class="fuel-simple-card"><span>Rule</span><strong>180-200 km</strong></section>`,
+      `<section class="fuel-simple-card"><span>Stops</span><strong>${fuelStops.length}</strong></section>`,
+      '</div>',
+      `<section class="fuel-plan-card"><span>Plan</span><p>${htmlEscape(day.fuel || "Fuel before 180-200 km and never arrive at camp on reserve.")}</p></section>`,
+      '<section class="fuel-stop-panel">',
+      '<div class="nearby-head"><span>Planned fuel stops</span></div>',
+      '<div class="fuel-stop-grid">',
+      fuelStops.map((stop) => (
+        `<a class="fuel-stop-card" target="_blank" rel="noopener" href="${htmlEscape(googleSearchLink(stop.name))}">` +
+        `${icon("fuel")}<span><strong>${htmlEscape(stop.name)}</strong><small>${htmlEscape(stop.type || "fuel")}</small></span>` +
+        '</a>'
+      )).join(""),
+      '</div>',
+      '</section>'
     ].join("");
-    renderFuelShortcut();
+  }
+
+  function parseTripDateRange(day) {
+    const match = dayDate(day).match(/(\d+)(?:[–-](\d+))?\s+([A-Za-z]+)/);
+    if (!match) return null;
+    const months = { Jul: 6, July: 6, Aug: 7, August: 7 };
+    const month = months[match[3]];
+    if (month == null) return null;
+    return {
+      start: Number(match[1]),
+      end: Number(match[2] || match[1]),
+      month
+    };
+  }
+
+  function calendarMonthMarkup(month, label) {
+    const weekdays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+    const entries = days.map((day, index) => ({ day, index, range: parseTripDateRange(day) }))
+      .filter((entry) => entry.range?.month === month);
+    const entryByStart = new Map(entries.map((entry) => [entry.range.start, entry]));
+    const daysInMonth = new Date(2026, month + 1, 0).getDate();
+    const leading = (new Date(2026, month, 1).getDay() + 6) % 7;
+    const cells = [];
+    for (let i = 0; i < leading; i += 1) cells.push('<div class="calendar-cell is-empty"></div>');
+    for (let date = 1; date <= daysInMonth; date += 1) {
+      const entry = entryByStart.get(date);
+      const active = entry?.index === currentDay;
+      cells.push([
+        `<div class="calendar-cell${entry ? " has-trip" : ""}${active ? " is-current" : ""}">`,
+        `<span class="calendar-number">${date}</span>`,
+        entry ? [
+          `<button class="calendar-day-button" type="button" data-select-day="${entry.index}" data-go="itinerary">`,
+          `<strong>${htmlEscape(`Day ${entry.day.shortLabel}`)}</strong>`,
+          entry.range.end > entry.range.start ? `<small>${htmlEscape(`${entry.range.start}-${entry.range.end} ${label}`)}</small>` : "",
+          '</button>'
+        ].join("") : "",
+        '</div>'
+      ].join(""));
+    }
+    return [
+      '<section class="calendar-month">',
+      `<h3>${htmlEscape(label)} 2026</h3>`,
+      `<div class="calendar-weekdays">${weekdays.map((day) => `<span>${day}</span>`).join("")}</div>`,
+      `<div class="calendar-grid">${cells.join("")}</div>`,
+      '</section>'
+    ].join("");
   }
 
   function renderCalendar() {
     const target = document.getElementById("calendar-card");
     if (!target || !days.length) return;
     target.innerHTML = [
-      '<div class="calendar-list">',
-      days.map((day, index) => [
-        `<article class="calendar-row${index === currentDay ? " is-current" : ""}">`,
-        '<div class="calendar-date">',
-        `<strong>${htmlEscape(dayDate(day))}</strong>`,
-        `<span>${htmlEscape(day.label)}</span>`,
-        '</div>',
-        '<div class="calendar-main">',
-        `<h3>${htmlEscape(day.title)}</h3>`,
-        `<p>${htmlEscape(day.night || dayRegion(day))}</p>`,
-        '</div>',
-        '<div class="calendar-actions">',
-        `<button class="mini-link button-link" type="button" data-select-day="${index}" data-go="today">Today</button>`,
-        `<a class="mini-link" href="#${htmlEscape(day.id)}" data-select-day="${index}">Card</a>`,
-        '</div>',
-        '</article>'
-      ].join("")).join(""),
-      '</div>'
+      '<div class="calendar-summary">',
+      '<strong>20 Jul - 14 Aug</strong>',
+      '<span>The Hague to the Alps, Switzerland, Vosges, Ardennes, home.</span>',
+      '</div>',
+      '<div class="calendar-months">',
+      calendarMonthMarkup(6, "Jul"),
+      calendarMonthMarkup(7, "Aug"),
+      '</div>',
+      `<div class="calendar-selected"><span>Selected</span><strong>${htmlEscape(dayDate(days[currentDay]))} · ${htmlEscape(days[currentDay].title)}</strong></div>`
     ].join("");
   }
 
@@ -796,7 +933,7 @@
       `<a href="#itinerary" data-tab="itinerary">${icon("route")}<span>Route</span></a>`,
       `<a href="#fuel" data-tab="fuel">${icon("fuel")}<span>Fuel</span></a>`,
       `<a href="#calendar" data-tab="calendar">${icon("calendar")}<span>Dates</span></a>`,
-      `<a href="#settings" data-tab="settings">${icon("settings")}<span>Setup</span></a>`
+      `<a href="#settings" data-tab="settings">${icon("sliders")}<span>Setup</span></a>`
     ].join("");
     document.body.appendChild(nav);
   }
@@ -835,6 +972,10 @@
           if (dayButton.dataset.go === "today") {
             event.preventDefault();
             window.location.hash = "today";
+          }
+          if (dayButton.dataset.go === "itinerary") {
+            event.preventDefault();
+            window.location.hash = "itinerary";
           }
         }
       }
@@ -880,14 +1021,14 @@
             ? "itinerary"
             : "today";
     document.body.dataset.activeTab = active;
-    document.body.dataset.showDayCards = String(hash === "days" || hashDayIndex >= 0);
+    document.body.dataset.showDayCards = String(hash === "days");
     document.body.dataset.showGpx = String(hash === "gpx");
     document.querySelectorAll("[data-tab]").forEach((link) => {
       link.classList.toggle("is-active", link.dataset.tab === active);
     });
     if (hashDayIndex >= 0) {
       window.requestAnimationFrame(() => {
-        document.getElementById(hash)?.scrollIntoView({ behavior: "smooth", block: "start" });
+        document.getElementById("itinerary")?.scrollIntoView({ behavior: "smooth", block: "start" });
       });
     }
   }
