@@ -857,6 +857,7 @@ html[data-theme="night"] .today-hero-copy {
 .today-actions .action:focus-visible,
 .today-actions .today-activity:focus-visible,
 .today-itinerary summary:focus-visible,
+.today-sights summary:focus-visible,
 .sight-card:focus-visible {
   outline: 3px solid rgba(45, 108, 223, 0.38);
   outline-offset: 3px;
@@ -879,7 +880,8 @@ html[data-theme="night"] .today-hero-copy {
   gap: 0;
 }
 
-.today-itinerary summary {
+.today-itinerary summary,
+.today-sights summary {
   align-items: center;
   cursor: pointer;
   display: grid;
@@ -890,31 +892,38 @@ html[data-theme="night"] .today-hero-copy {
   padding: 12px;
 }
 
-.today-itinerary summary::-webkit-details-marker {
+.today-itinerary summary::-webkit-details-marker,
+.today-sights summary::-webkit-details-marker {
   display: none;
 }
 
 .today-itinerary summary span,
 .today-itinerary summary small,
-.today-itinerary summary strong {
+.today-itinerary summary strong,
+.today-sights summary span,
+.today-sights summary small,
+.today-sights summary strong {
   display: block;
   min-width: 0;
 }
 
-.today-itinerary summary small {
+.today-itinerary summary small,
+.today-sights summary small {
   color: var(--accent);
   font-size: 12px;
   font-weight: 900;
   text-transform: uppercase;
 }
 
-.today-itinerary summary strong {
+.today-itinerary summary strong,
+.today-sights summary strong {
   color: var(--text);
   font-size: 20px;
   line-height: 1.05;
 }
 
-.today-itinerary summary b {
+.today-itinerary summary b,
+.today-sights summary b {
   border: 1px solid rgba(22, 116, 71, 0.18);
   border-radius: 999px;
   background: var(--surface-soft);
@@ -925,8 +934,102 @@ html[data-theme="night"] .today-hero-copy {
   white-space: nowrap;
 }
 
-.today-itinerary[open] summary {
+.today-itinerary[open] summary,
+.today-sights[open] summary {
   border-bottom: 1px solid var(--line);
+}
+
+.roadbook-steps {
+  counter-reset: roadbook;
+  display: grid;
+  gap: 0;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.roadbook-step {
+  counter-increment: roadbook;
+  align-items: center;
+  display: grid;
+  gap: 10px;
+  grid-template-columns: 34px minmax(0, 1fr) 36px;
+  min-height: 64px;
+  padding: 10px 12px;
+  border-top: 1px solid var(--line);
+}
+
+.roadbook-step:first-child {
+  border-top: 0;
+}
+
+.roadbook-step-number {
+  align-items: center;
+  border-radius: 999px;
+  display: inline-flex;
+  height: 30px;
+  justify-content: center;
+  width: 30px;
+  background: var(--surface-soft);
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 950;
+}
+
+.roadbook-step-number::before {
+  content: counter(roadbook);
+}
+
+.roadbook-step-copy {
+  min-width: 0;
+}
+
+.roadbook-step-copy strong,
+.roadbook-step-copy small {
+  display: block;
+  min-width: 0;
+}
+
+.roadbook-step-copy strong {
+  color: var(--text);
+  font-size: 16px;
+  line-height: 1.1;
+}
+
+.roadbook-step-copy small {
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 800;
+  line-height: 1.25;
+  margin-top: 4px;
+}
+
+.roadbook-step-icon {
+  align-items: center;
+  border-radius: 11px;
+  display: inline-flex;
+  height: 36px;
+  justify-content: center;
+  width: 36px;
+  background: var(--surface-soft);
+  color: var(--accent);
+}
+
+.roadbook-step-icon svg {
+  height: 20px;
+  width: 20px;
+}
+
+.roadbook-step.fuel .roadbook-step-icon {
+  color: var(--blue);
+}
+
+.roadbook-step.break .roadbook-step-icon {
+  color: #8a5a00;
+}
+
+.roadbook-step.sight .roadbook-step-icon {
+  color: #a45a10;
 }
 
 .today-route-summary {
@@ -1059,8 +1162,11 @@ html[data-theme="night"] .today-hero-copy {
 }
 
 .today-sights {
-  display: grid;
-  gap: 10px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--surface-solid);
+  box-shadow: 0 10px 24px rgba(24, 39, 30, 0.08);
 }
 
 .today-section-head {
@@ -1090,7 +1196,7 @@ html[data-theme="night"] .today-hero-copy {
   grid-auto-columns: minmax(228px, 72%);
   grid-auto-flow: column;
   overflow-x: auto;
-  padding: 1px 2px 8px;
+  padding: 10px;
   scroll-snap-type: x proximity;
   -webkit-overflow-scrolling: touch;
 }

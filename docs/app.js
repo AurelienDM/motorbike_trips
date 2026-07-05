@@ -265,7 +265,8 @@
       distanceKm: routeMetric?.km || parseKm(distance),
       routeDurationMins: routeMetric?.mins || 0,
       legsKm: routeMetric?.legs || [],
-      rideTime: statValue(stats, "Riding time"),
+      plannedRideTime: statValue(stats, "Riding time"),
+      rideTime: routeMetric?.mins ? formatDuration(routeMetric.mins) : statValue(stats, "Riding time"),
       road: statValue(stats, "Road"),
       google,
       coords,
@@ -377,7 +378,7 @@
   function chipMarkup(day) {
     return [
       ["Distance", day.distance || "-"],
-      ["Ride", day.rideTime || "-"],
+      ["Duration", day.rideTime || "-"],
       ["Road", day.road || "-"]
     ].map(([label, value]) => (
       `<div class="metric"><span>${htmlEscape(label)}</span><b>${htmlEscape(value)}</b></div>`
@@ -801,28 +802,18 @@
     return [
       '<details class="today-itinerary" open>',
       '<summary>',
-      '<span><small>Rough itinerary</small><strong>Ride rhythm</strong></span>',
-      `<b>${htmlEscape(day.distance)}${day.routeDurationMins ? ` · ${htmlEscape(formatDuration(day.routeDurationMins))}` : ""}</b>`,
+      '<span><small>Roadbook</small><strong>Steps</strong></span>',
+      `<b>${htmlEscape(String(items.length))} stops</b>`,
       '</summary>',
-      '<div class="today-route-summary">',
-      `<span><strong>${htmlEscape(day.distance)}</strong><small>OSM route km</small></span>`,
-      day.routeDurationMins ? `<span><strong>${htmlEscape(formatDuration(day.routeDurationMins))}</strong><small>OSM estimate</small></span>` : "",
-      `<span><strong>${htmlEscape(String(items.length))}</strong><small>Route legs</small></span>`,
-      '</div>',
-      '<ol class="ride-segments">',
+      '<ol class="roadbook-steps">',
       items.map((item) => [
-        `<li class="ride-segment ${htmlEscape(item.kind)}">`,
-        '<span class="ride-segment-leg">',
+        `<li class="roadbook-step ${htmlEscape(item.kind)}">`,
+        '<span class="roadbook-step-number"></span>',
+        '<span class="roadbook-step-copy">',
         `<strong>Ride ${htmlEscape(String(item.km))} km</strong>`,
-        `<small>to ${htmlEscape(item.name)}</small>`,
+        `<small>${htmlEscape(item.name)} · ${htmlEscape(stopKindLabel(item.kind).toLowerCase())}</small>`,
         '</span>',
-        '<span class="ride-segment-stop">',
-        `<span class="ride-segment-icon">${icon(stopKindIcon(item.kind))}</span>`,
-        '<span>',
-        `<b>${htmlEscape(stopKindLabel(item.kind))}</b>`,
-        `<small>${htmlEscape(item.type)}</small>`,
-        '</span>',
-        '</span>',
+        `<span class="roadbook-step-icon">${icon(stopKindIcon(item.kind))}</span>`,
         '</li>'
       ].join("")).join(""),
       '</ol>',
@@ -976,8 +967,8 @@
   function todaySightsMarkup(day) {
     const sights = todaySights(day);
     return [
-      '<section class="today-sights" aria-label="Nearby sights">',
-      '<div class="today-section-head"><span>Nearby sights</span><strong>Worth a stop</strong></div>',
+      '<details class="today-sights">',
+      '<summary><span><small>Optional</small><strong>Nearby stops</strong></span><b>On route</b></summary>',
       '<div class="sight-strip">',
       sights.map((sight, index) => [
         `<a class="sight-card" target="_blank" rel="noopener" href="${htmlEscape(sight.href)}" aria-label="Open ${htmlEscape(sight.name)} in Maps">`,
@@ -991,7 +982,7 @@
         '</a>'
       ].join("")).join(""),
       '</div>',
-      '</section>'
+      '</details>'
     ].join("");
   }
 
@@ -1085,13 +1076,7 @@
       '</div>',
       '<div class="today-actions">',
       day.google ? actionLink("action primary today-main-action", day.google, "Maps", "map") : "",
-      todayActivityTile({
-        href: fuelMapsLink(),
-        title: "Fuel",
-        text: "Near me",
-        iconName: "fuel",
-        className: "today-fuel-direct"
-      }),
+      actionLink("action fuel-action today-main-action", fuelMapsLink(), "Fuel", "fuel"),
       day.camp ? actionLink("action camp-action today-main-action", day.camp, "Camp", "camp") : "",
       '</div>',
       '<div class="today-hero">',
@@ -1099,15 +1084,7 @@
       '</div>',
       `<div class="metric-row today-stats">${chipMarkup(day)}</div>`,
       todayRoughItineraryMarkup(day),
-      todaySightsMarkup(day),
-      '<div class="today-activities">',
-      todayActivities(day),
-      '</div>',
-      '<div class="today-secondary">',
-      `<button class="mini-link button-link" type="button" data-prev-day${currentDay === 0 ? " disabled" : ""}>Previous</button>`,
-      '<button class="mini-link button-link" type="button" data-open-day>Day Card</button>',
-      `<button class="mini-link button-link" type="button" data-next-day${currentDay === days.length - 1 ? " disabled" : ""}>Next</button>`,
-      '</div>'
+      todaySightsMarkup(day)
     ].join("");
     attachMapTileHandlers(target);
   }
