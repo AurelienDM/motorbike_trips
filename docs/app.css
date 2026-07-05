@@ -1,0 +1,310 @@
+:root {
+  --bg: #06110c;
+  --card: #101713;
+  --card2: #18211c;
+  --text: #fffaf0;
+  --muted: #c7d2c2;
+  --line: #34433a;
+  --accent: #7dd87d;
+  --green: #1f8f4d;
+  --yellow: #e6b450;
+  --red: #ef4444;
+  --light: #fffaf0;
+  --dark: #08100b;
+}
+
+body {
+  background:
+    radial-gradient(circle at 16% -10%, rgba(125, 216, 125, 0.14), transparent 28rem),
+    linear-gradient(180deg, #06110c 0%, #0b1510 46%, #050907 100%);
+}
+
+html,
+body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+.wrap,
+main,
+section,
+article,
+.panel,
+.card,
+.mapbox,
+.stats,
+.stat {
+  min-width: 0;
+}
+
+p,
+h1,
+h2,
+h3,
+.note,
+.item,
+.stop,
+.stat,
+.ride-block {
+  overflow-wrap: anywhere;
+}
+
+.hero h1,
+.card h2,
+.section-title,
+.date,
+.stat span {
+  letter-spacing: 0;
+}
+
+.hero h1 {
+  font-size: 42px;
+}
+
+.panel,
+.card,
+.stat,
+.item,
+.note,
+.warning,
+.safe,
+.mapbox {
+  border-radius: 8px;
+}
+
+.btn,
+.wake,
+.pill,
+.daypill,
+.badge {
+  border-radius: 8px;
+}
+
+.pill.primary,
+.daynum,
+.btn.blue {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #06110c;
+}
+
+.btn.green {
+  background: var(--yellow);
+  border-color: var(--yellow);
+  color: #1b1200;
+}
+
+.btn.osmand {
+  background: #1f8f4d;
+  border-color: #1f8f4d;
+  color: #f7fff5;
+}
+
+.btn {
+  min-height: 54px;
+}
+
+.stats {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.sticky {
+  background: rgba(6, 17, 12, 0.94);
+}
+
+.ride-mode {
+  border-color: rgba(125, 216, 125, 0.42);
+}
+
+.ride-mode-head {
+  display: grid;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.ride-mode-head h2 {
+  margin: 2px 0 0;
+}
+
+.ride-select {
+  width: 100%;
+  min-height: 52px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #08100b;
+  color: var(--text);
+  font: inherit;
+  font-weight: 800;
+  padding: 0 12px;
+}
+
+.ride-card {
+  display: grid;
+  gap: 12px;
+}
+
+.ride-title {
+  margin: 0;
+  font-size: 25px;
+  line-height: 1.1;
+}
+
+.ride-meta {
+  color: var(--muted);
+  font-weight: 800;
+  margin-top: 4px;
+}
+
+.ride-chips {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.ride-chip {
+  min-height: 64px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #08100b;
+  padding: 10px;
+}
+
+.ride-chip span {
+  display: block;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.ride-chip b {
+  display: block;
+  margin-top: 3px;
+  font-size: 18px;
+}
+
+.ride-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 9px;
+}
+
+.ride-actions .btn {
+  min-height: 62px;
+}
+
+.ride-actions .wide {
+  grid-column: 1 / -1;
+}
+
+.ride-block {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #08100b;
+  padding: 12px;
+}
+
+.ride-block h3 {
+  margin: 0 0 6px;
+  font-size: 14px;
+  color: var(--accent);
+}
+
+.ride-block p {
+  margin: 0;
+  color: var(--muted);
+}
+
+.ride-list {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ride-list li {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  border-top: 1px solid rgba(199, 210, 194, 0.12);
+  padding-top: 6px;
+  color: var(--muted);
+}
+
+.ride-list li:first-child {
+  border-top: 0;
+  padding-top: 0;
+}
+
+.ride-list strong {
+  color: var(--text);
+}
+
+.ride-nav {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 9px;
+}
+
+.ride-muted {
+  color: var(--muted);
+}
+
+@media (min-width: 760px) {
+  .stats {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+
+  .ride-mode-head {
+    grid-template-columns: 1fr minmax(260px, 380px);
+    align-items: end;
+  }
+
+  .ride-card {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .ride-card-main,
+  .ride-actions,
+  .ride-nav {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 480px) {
+  .wrap {
+    padding: 10px;
+  }
+
+  .hero {
+    padding: 16px 4px 8px;
+  }
+
+  .hero h1 {
+    font-size: 34px;
+    line-height: 1.04;
+  }
+
+  .card-header,
+  .card-body {
+    padding: 12px;
+  }
+
+  .stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .stat b {
+    font-size: 17px;
+  }
+
+  .ride-chips {
+    grid-template-columns: 1fr;
+  }
+
+  .btns,
+  .ride-actions,
+  .ride-nav {
+    grid-template-columns: 1fr;
+  }
+}

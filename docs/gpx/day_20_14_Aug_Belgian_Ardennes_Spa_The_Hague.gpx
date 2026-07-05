@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gpx version="1.1" creator="ChatGPT Road Book v3 - routepoints only, no misleading straight-line track" xmlns="http://www.topografix.com/GPX/1/1">
+  <metadata>
+    <name>14 Aug - Belgian Ardennes / Spa → The Hague</name>
+    <desc>300 km · 3h30–5h00 · Efficient return with optional scenic Ardennes morning. Import as a route in OsmAnd/Kurviger/Calimoto/Garmin and let the app calculate roads between routepoints.</desc>
+  </metadata>
+  <wpt lat="50.492000" lon="5.866000"><name>Spa / Belgian Ardennes</name><type>start</type></wpt>
+  <wpt lat="50.632600" lon="5.579700"><name>Liège / fuel</name><type>fuel</type></wpt>
+  <wpt lat="50.851400" lon="5.691000"><name>Maastricht / coffee</name><type>break</type></wpt>
+  <wpt lat="51.441600" lon="5.469700"><name>Eindhoven / fuel</name><type>fuel</type></wpt>
+  <wpt lat="51.571900" lon="4.768300"><name>Breda break</name><type>break</type></wpt>
+  <wpt lat="52.070500" lon="4.300700"><name>The Hague</name><type>night</type></wpt>
+  <rte>
+    <name>14 Aug - Belgian Ardennes / Spa → The Hague</name>
+    <desc>300 km · 3h30–5h00 · Transfer · road-calculated route from curated via points.</desc>
+    <rtept lat="50.492000" lon="5.866000"><name>01. Spa / Belgian Ardennes</name><type>start</type></rtept>
+    <rtept lat="50.632600" lon="5.579700"><name>02. Liège / fuel</name><type>fuel</type></rtept>
+    <rtept lat="50.851400" lon="5.691000"><name>03. Maastricht / coffee</name><type>break</type></rtept>
+    <rtept lat="51.441600" lon="5.469700"><name>04. Eindhoven / fuel</name><type>fuel</type></rtept>
+    <rtept lat="51.571900" lon="4.768300"><name>05. Breda break</name><type>break</type></rtept>
+    <rtept lat="52.070500" lon="4.300700"><name>06. The Hague</name><type>night</type></rtept>
+  </rte>
+</gpx>

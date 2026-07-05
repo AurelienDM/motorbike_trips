@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gpx version="1.1" creator="ChatGPT Road Book v3 - routepoints only, no misleading straight-line track" xmlns="http://www.topografix.com/GPX/1/1">
+  <metadata>
+    <name>8 Aug - Geneva → Optional Salève / Jura shakeout</name>
+    <desc>120 km · 2h30–4h00 optional · Short social day; French-side Jura roads or Salève if you feel like riding. Import as a route in OsmAnd/Kurviger/Calimoto/Garmin and let the app calculate roads between routepoints.</desc>
+  </metadata>
+  <wpt lat="46.204400" lon="6.143200"><name>Geneva</name><type>start</type></wpt>
+  <wpt lat="46.137000" lon="6.188000"><name>Mont Salève</name><type>view</type></wpt>
+  <wpt lat="46.364000" lon="6.017000"><name>Col de la Faucille / Jura view</name><type>view</type></wpt>
+  <wpt lat="46.358000" lon="6.135000"><name>Divonne-les-Bains coffee</name><type>break</type></wpt>
+  <wpt lat="46.204400" lon="6.143200"><name>Geneva / top-up fuel</name><type>fuel</type></wpt>
+  <rte>
+    <name>8 Aug - Geneva → Optional Salève / Jura shakeout</name>
+    <desc>120 km · 2h30–4h00 optional · Rest / friends · road-calculated route from curated via points.</desc>
+    <rtept lat="46.204400" lon="6.143200"><name>01. Geneva</name><type>start</type></rtept>
+    <rtept lat="46.137000" lon="6.188000"><name>02. Mont Salève</name><type>view</type></rtept>
+    <rtept lat="46.364000" lon="6.017000"><name>03. Col de la Faucille / Jura view</name><type>view</type></rtept>
+    <rtept lat="46.358000" lon="6.135000"><name>04. Divonne-les-Bains coffee</name><type>break</type></rtept>
+    <rtept lat="46.204400" lon="6.143200"><name>05. Geneva / top-up fuel</name><type>fuel</type></rtept>
+  </rte>
+</gpx>

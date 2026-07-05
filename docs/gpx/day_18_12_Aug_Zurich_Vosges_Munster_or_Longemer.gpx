@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gpx version="1.1" creator="ChatGPT Road Book v3 - routepoints only, no misleading straight-line track" xmlns="http://www.topografix.com/GPX/1/1">
+  <metadata>
+    <name>12 Aug - Zurich → Vosges / Munster or Longemer</name>
+    <desc>270 km · 4h30–5h50 · Black Forest or Basel/Alsace into the Vosges. Choose Black Forest if you still want riding; Basel/Alsace if you want simpler navigation. Import as a route in OsmAnd/Kurviger/Calimoto/Garmin and let the app calculate roads between routepoints.</desc>
+  </metadata>
+  <wpt lat="47.376900" lon="8.541700"><name>Zurich</name><type>start</type></wpt>
+  <wpt lat="47.559600" lon="7.588600"><name>Basel / fuel</name><type>fuel</type></wpt>
+  <wpt lat="47.999000" lon="7.842000"><name>Freiburg im Breisgau</name><type>fuel</type></wpt>
+  <wpt lat="47.904000" lon="8.153000"><name>Titisee / Black Forest</name><type>break</type></wpt>
+  <wpt lat="47.818000" lon="8.180000"><name>Schluchsee</name><type>break</type></wpt>
+  <wpt lat="48.079000" lon="7.358000"><name>Colmar / Alsace</name><type>view</type></wpt>
+  <wpt lat="48.041000" lon="7.135000"><name>Munster valley</name><type>view</type></wpt>
+  <wpt lat="47.997000" lon="7.030000"><name>Mittlach / Langenwasen</name><type>camp</type></wpt>
+  <rte>
+    <name>12 Aug - Zurich → Vosges / Munster or Longemer</name>
+    <desc>270 km · 4h30–5h50 · Transfer · road-calculated route from curated via points.</desc>
+    <rtept lat="47.376900" lon="8.541700"><name>01. Zurich</name><type>start</type></rtept>
+    <rtept lat="47.559600" lon="7.588600"><name>02. Basel / fuel</name><type>fuel</type></rtept>
+    <rtept lat="47.999000" lon="7.842000"><name>03. Freiburg im Breisgau</name><type>fuel</type></rtept>
+    <rtept lat="47.904000" lon="8.153000"><name>04. Titisee / Black Forest</name><type>break</type></rtept>
+    <rtept lat="47.818000" lon="8.180000"><name>05. Schluchsee</name><type>break</type></rtept>
+    <rtept lat="48.079000" lon="7.358000"><name>06. Colmar / Alsace</name><type>view</type></rtept>
+    <rtept lat="48.041000" lon="7.135000"><name>07. Munster valley</name><type>view</type></rtept>
+    <rtept lat="47.997000" lon="7.030000"><name>08. Mittlach / Langenwasen</name><type>camp</type></rtept>
+  </rte>
+</gpx>

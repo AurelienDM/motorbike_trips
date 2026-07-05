@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gpx version="1.1" creator="ChatGPT Road Book v3 - routepoints only, no misleading straight-line track" xmlns="http://www.topografix.com/GPX/1/1">
+  <metadata>
+    <name>23 Jul - Lac des Settons → Le Bost, 63640 Biollet</name>
+    <desc>270 km · 4h30–5h30 · Morvan to Allier/Combrailles. Scenic D-roads where possible, but keep the objective clear: arrive relaxed. Import as a route in OsmAnd/Kurviger/Calimoto/Garmin and let the app calculate roads between routepoints.</desc>
+  </metadata>
+  <wpt lat="47.187000" lon="4.061000"><name>Lac des Settons</name><type>start</type></wpt>
+  <wpt lat="46.990000" lon="3.159000"><name>Nevers / coffee</name><type>break</type></wpt>
+  <wpt lat="46.568000" lon="3.334000"><name>Moulins / Allier break</name><type>break</type></wpt>
+  <wpt lat="46.340000" lon="2.603000"><name>Montluçon / fuel</name><type>fuel</type></wpt>
+  <wpt lat="45.999000" lon="2.693000"><name>Le Bost / Biollet</name><type>night</type></wpt>
+  <rte>
+    <name>23 Jul - Lac des Settons → Le Bost, 63640 Biollet</name>
+    <desc>270 km · 4h30–5h30 · Transfer · road-calculated route from curated via points.</desc>
+    <rtept lat="47.187000" lon="4.061000"><name>01. Lac des Settons</name><type>start</type></rtept>
+    <rtept lat="46.990000" lon="3.159000"><name>02. Nevers / coffee</name><type>break</type></rtept>
+    <rtept lat="46.568000" lon="3.334000"><name>03. Moulins / Allier break</name><type>break</type></rtept>
+    <rtept lat="46.340000" lon="2.603000"><name>04. Montluçon / fuel</name><type>fuel</type></rtept>
+    <rtept lat="45.999000" lon="2.693000"><name>05. Le Bost / Biollet</name><type>night</type></rtept>
+  </rte>
+</gpx>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gpx version="1.1" creator="ChatGPT Road Book v3 - routepoints only, no misleading straight-line track" xmlns="http://www.topografix.com/GPX/1/1">
+  <metadata>
+    <name>2 Aug - Beaufort → Les Saisies / Hauteluce / Arêches loop</name>
+    <desc>140 km · 3h30–5h00 · Forest roads, balcony roads, alpine villages; gravel only where clearly legal/open. Import as a route in OsmAnd/Kurviger/Calimoto/Garmin and let the app calculate roads between routepoints.</desc>
+  </metadata>
+  <wpt lat="45.717000" lon="6.573000"><name>Beaufort / Camping Domelin</name><type>start</type></wpt>
+  <wpt lat="45.749000" lon="6.590000"><name>Hauteluce</name><type>view</type></wpt>
+  <wpt lat="45.758000" lon="6.538000"><name>Les Saisies / fuel option</name><type>fuel</type></wpt>
+  <wpt lat="45.809000" lon="6.521000"><name>Notre-Dame-de-Bellecombe</name><type>view</type></wpt>
+  <wpt lat="45.820000" lon="6.515000"><name>Flumet</name><type>break</type></wpt>
+  <wpt lat="45.751000" lon="6.416000"><name>Ugine</name><type>fuel</type></wpt>
+  <wpt lat="45.717000" lon="6.573000"><name>Beaufort / Camping Domelin</name><type>camp</type></wpt>
+  <rte>
+    <name>2 Aug - Beaufort → Les Saisies / Hauteluce / Arêches loop</name>
+    <desc>140 km · 3h30–5h00 · Base loop · road-calculated route from curated via points.</desc>
+    <rtept lat="45.717000" lon="6.573000"><name>01. Beaufort / Camping Domelin</name><type>start</type></rtept>
+    <rtept lat="45.749000" lon="6.590000"><name>02. Hauteluce</name><type>view</type></rtept>
+    <rtept lat="45.758000" lon="6.538000"><name>03. Les Saisies / fuel option</name><type>fuel</type></rtept>
+    <rtept lat="45.809000" lon="6.521000"><name>04. Notre-Dame-de-Bellecombe</name><type>view</type></rtept>
+    <rtept lat="45.820000" lon="6.515000"><name>05. Flumet</name><type>break</type></rtept>
+    <rtept lat="45.751000" lon="6.416000"><name>06. Ugine</name><type>fuel</type></rtept>
+    <rtept lat="45.717000" lon="6.573000"><name>07. Beaufort / Camping Domelin</name><type>camp</type></rtept>
+  </rte>
+</gpx>

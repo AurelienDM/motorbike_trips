@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gpx version="1.1" creator="ChatGPT Road Book v3 - routepoints only, no misleading straight-line track" xmlns="http://www.topografix.com/GPX/1/1">
+  <metadata>
+    <name>20 Jul - The Hague → Kautenbach / Luxembourg Ardennes</name>
+    <desc>335 km · 4h45–5h30 · Motorway escape first, then final Ardennes forest/twisties. Keep this day simple and arrive with energy. Import as a route in OsmAnd/Kurviger/Calimoto/Garmin and let the app calculate roads between routepoints.</desc>
+  </metadata>
+  <wpt lat="52.070500" lon="4.300700"><name>The Hague</name><type>start</type></wpt>
+  <wpt lat="51.571900" lon="4.768300"><name>Breda</name><type>break</type></wpt>
+  <wpt lat="51.441600" lon="5.469700"><name>Eindhoven fuel option</name><type>fuel</type></wpt>
+  <wpt lat="50.632600" lon="5.579700"><name>Liège / fuel</name><type>fuel</type></wpt>
+  <wpt lat="50.587000" lon="5.975000"><name>Lac de la Gileppe / nature stop</name><type>break</type></wpt>
+  <wpt lat="50.054000" lon="6.031000"><name>Clervaux</name><type>view</type></wpt>
+  <wpt lat="49.952000" lon="6.020000"><name>Camping Kautenbach</name><type>camp</type></wpt>
+  <rte>
+    <name>20 Jul - The Hague → Kautenbach / Luxembourg Ardennes</name>
+    <desc>335 km · 4h45–5h30 · Transfer · road-calculated route from curated via points.</desc>
+    <rtept lat="52.070500" lon="4.300700"><name>01. The Hague</name><type>start</type></rtept>
+    <rtept lat="51.571900" lon="4.768300"><name>02. Breda</name><type>break</type></rtept>
+    <rtept lat="51.441600" lon="5.469700"><name>03. Eindhoven fuel option</name><type>fuel</type></rtept>
+    <rtept lat="50.632600" lon="5.579700"><name>04. Liège / fuel</name><type>fuel</type></rtept>
+    <rtept lat="50.587000" lon="5.975000"><name>05. Lac de la Gileppe / nature stop</name><type>break</type></rtept>
+    <rtept lat="50.054000" lon="6.031000"><name>06. Clervaux</name><type>view</type></rtept>
+    <rtept lat="49.952000" lon="6.020000"><name>07. Camping Kautenbach</name><type>camp</type></rtept>
+  </rte>
+</gpx>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gpx version="1.1" creator="ChatGPT Road Book v3 - routepoints only, no misleading straight-line track" xmlns="http://www.topografix.com/GPX/1/1">
+  <metadata>
+    <name>3 Aug - Beaufort → Rest / groceries / sunset ride</name>
+    <desc>60 km · 0h–2h00 · Rest day, groceries, laundry, chain lube, or short sunset ride. Import as a route in OsmAnd/Kurviger/Calimoto/Garmin and let the app calculate roads between routepoints.</desc>
+  </metadata>
+  <wpt lat="45.717000" lon="6.573000"><name>Beaufort / Camping Domelin</name><type>start</type></wpt>
+  <wpt lat="45.718000" lon="6.573000"><name>Beaufort village coffee/fuel</name><type>fuel</type></wpt>
+  <wpt lat="45.657000" lon="6.600000"><name>Lac de Saint-Guérin picnic</name><type>break</type></wpt>
+  <wpt lat="45.687000" lon="6.568000"><name>Arêches</name><type>view</type></wpt>
+  <wpt lat="45.717000" lon="6.573000"><name>Beaufort / Camping Domelin</name><type>camp</type></wpt>
+  <rte>
+    <name>3 Aug - Beaufort → Rest / groceries / sunset ride</name>
+    <desc>60 km · 0h–2h00 · Rest / local · road-calculated route from curated via points.</desc>
+    <rtept lat="45.717000" lon="6.573000"><name>01. Beaufort / Camping Domelin</name><type>start</type></rtept>
+    <rtept lat="45.718000" lon="6.573000"><name>02. Beaufort village coffee/fuel</name><type>fuel</type></rtept>
+    <rtept lat="45.657000" lon="6.600000"><name>03. Lac de Saint-Guérin picnic</name><type>break</type></rtept>
+    <rtept lat="45.687000" lon="6.568000"><name>04. Arêches</name><type>view</type></rtept>
+    <rtept lat="45.717000" lon="6.573000"><name>05. Beaufort / Camping Domelin</name><type>camp</type></rtept>
+  </rte>
+</gpx>

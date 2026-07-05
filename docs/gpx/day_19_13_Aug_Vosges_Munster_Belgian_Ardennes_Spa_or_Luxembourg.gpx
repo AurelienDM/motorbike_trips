@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gpx version="1.1" creator="ChatGPT Road Book v3 - routepoints only, no misleading straight-line track" xmlns="http://www.topografix.com/GPX/1/1">
+  <metadata>
+    <name>13 Aug - Vosges / Munster → Belgian Ardennes / Spa or Luxembourg</name>
+    <desc>350 km · 5h00–5h50 · Vosges morning twisties, then efficient Ardennes approach. Import as a route in OsmAnd/Kurviger/Calimoto/Garmin and let the app calculate roads between routepoints.</desc>
+  </metadata>
+  <wpt lat="47.997000" lon="7.030000"><name>Mittlach / Vosges</name><type>start</type></wpt>
+  <wpt lat="48.064000" lon="7.022000"><name>Col de la Schlucht</name><type>view</type></wpt>
+  <wpt lat="48.692000" lon="6.184000"><name>Nancy coffee</name><type>break</type></wpt>
+  <wpt lat="49.119300" lon="6.175700"><name>Metz / fuel</name><type>fuel</type></wpt>
+  <wpt lat="49.611600" lon="6.131900"><name>Luxembourg / coffee</name><type>break</type></wpt>
+  <wpt lat="50.003000" lon="5.718000"><name>Bastogne</name><type>view</type></wpt>
+  <wpt lat="50.492000" lon="5.866000"><name>Spa / Camping Spa d’Or</name><type>camp</type></wpt>
+  <rte>
+    <name>13 Aug - Vosges / Munster → Belgian Ardennes / Spa or Luxembourg</name>
+    <desc>350 km · 5h00–5h50 · Transfer · road-calculated route from curated via points.</desc>
+    <rtept lat="47.997000" lon="7.030000"><name>01. Mittlach / Vosges</name><type>start</type></rtept>
+    <rtept lat="48.064000" lon="7.022000"><name>02. Col de la Schlucht</name><type>view</type></rtept>
+    <rtept lat="48.692000" lon="6.184000"><name>03. Nancy coffee</name><type>break</type></rtept>
+    <rtept lat="49.119300" lon="6.175700"><name>04. Metz / fuel</name><type>fuel</type></rtept>
+    <rtept lat="49.611600" lon="6.131900"><name>05. Luxembourg / coffee</name><type>break</type></rtept>
+    <rtept lat="50.003000" lon="5.718000"><name>06. Bastogne</name><type>view</type></rtept>
+    <rtept lat="50.492000" lon="5.866000"><name>07. Spa / Camping Spa d’Or</name><type>camp</type></rtept>
+  </rte>
+</gpx>

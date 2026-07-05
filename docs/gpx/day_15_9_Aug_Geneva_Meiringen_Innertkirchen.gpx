@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gpx version="1.1" creator="ChatGPT Road Book v3 - routepoints only, no misleading straight-line track" xmlns="http://www.topografix.com/GPX/1/1">
+  <metadata>
+    <name>9 Aug - Geneva → Meiringen / Innertkirchen</name>
+    <desc>245 km · 5h00–5h50 · Swiss scenic roads via Gruyères/Gstaad/Interlaken. Mostly paved. No random off-road in Switzerland. Import as a route in OsmAnd/Kurviger/Calimoto/Garmin and let the app calculate roads between routepoints.</desc>
+  </metadata>
+  <wpt lat="46.204400" lon="6.143200"><name>Geneva</name><type>start</type></wpt>
+  <wpt lat="46.383000" lon="6.239000"><name>Nyon / lake road</name><type>view</type></wpt>
+  <wpt lat="46.584000" lon="7.083000"><name>Gruyères coffee</name><type>break</type></wpt>
+  <wpt lat="46.592000" lon="7.341000"><name>Jaunpass</name><type>view</type></wpt>
+  <wpt lat="46.688000" lon="7.679000"><name>Spiez / Lake Thun</name><type>break</type></wpt>
+  <wpt lat="46.686000" lon="7.863000"><name>Interlaken / fuel</name><type>fuel</type></wpt>
+  <wpt lat="46.735000" lon="8.045000"><name>Lake Brienz</name><type>break</type></wpt>
+  <wpt lat="46.728000" lon="8.187000"><name>Meiringen / Innertkirchen</name><type>camp</type></wpt>
+  <rte>
+    <name>9 Aug - Geneva → Meiringen / Innertkirchen</name>
+    <desc>245 km · 5h00–5h50 · Transfer · road-calculated route from curated via points.</desc>
+    <rtept lat="46.204400" lon="6.143200"><name>01. Geneva</name><type>start</type></rtept>
+    <rtept lat="46.383000" lon="6.239000"><name>02. Nyon / lake road</name><type>view</type></rtept>
+    <rtept lat="46.584000" lon="7.083000"><name>03. Gruyères coffee</name><type>break</type></rtept>
+    <rtept lat="46.592000" lon="7.341000"><name>04. Jaunpass</name><type>view</type></rtept>
+    <rtept lat="46.688000" lon="7.679000"><name>05. Spiez / Lake Thun</name><type>break</type></rtept>
+    <rtept lat="46.686000" lon="7.863000"><name>06. Interlaken / fuel</name><type>fuel</type></rtept>
+    <rtept lat="46.735000" lon="8.045000"><name>07. Lake Brienz</name><type>break</type></rtept>
+    <rtept lat="46.728000" lon="8.187000"><name>08. Meiringen / Innertkirchen</name><type>camp</type></rtept>
+  </rte>
+</gpx>

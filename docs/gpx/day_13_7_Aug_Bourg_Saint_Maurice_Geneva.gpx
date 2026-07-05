@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gpx version="1.1" creator="ChatGPT Road Book v3 - routepoints only, no misleading straight-line track" xmlns="http://www.topografix.com/GPX/1/1">
+  <metadata>
+    <name>7 Aug - Bourg-Saint-Maurice → Geneva</name>
+    <desc>220 km · 4h30–5h45 · Scenic via Aravis / Annecy. Avoid pure motorway if weather is good. Import as a route in OsmAnd/Kurviger/Calimoto/Garmin and let the app calculate roads between routepoints.</desc>
+  </metadata>
+  <wpt lat="45.617000" lon="6.769000"><name>Bourg-Saint-Maurice</name><type>start</type></wpt>
+  <wpt lat="45.675000" lon="6.392000"><name>Albertville / fuel</name><type>fuel</type></wpt>
+  <wpt lat="45.751000" lon="6.416000"><name>Ugine</name><type>view</type></wpt>
+  <wpt lat="45.872000" lon="6.464000"><name>Col des Aravis</name><type>view</type></wpt>
+  <wpt lat="45.904000" lon="6.423000"><name>La Clusaz coffee</name><type>break</type></wpt>
+  <wpt lat="45.882000" lon="6.326000"><name>Thônes</name><type>view</type></wpt>
+  <wpt lat="45.899000" lon="6.129000"><name>Lake Annecy picnic</name><type>break</type></wpt>
+  <wpt lat="45.899000" lon="6.129000"><name>Annecy / fuel</name><type>fuel</type></wpt>
+  <wpt lat="46.204400" lon="6.143200"><name>Geneva</name><type>night</type></wpt>
+  <rte>
+    <name>7 Aug - Bourg-Saint-Maurice → Geneva</name>
+    <desc>220 km · 4h30–5h45 · Transfer / friends · road-calculated route from curated via points.</desc>
+    <rtept lat="45.617000" lon="6.769000"><name>01. Bourg-Saint-Maurice</name><type>start</type></rtept>
+    <rtept lat="45.675000" lon="6.392000"><name>02. Albertville / fuel</name><type>fuel</type></rtept>
+    <rtept lat="45.751000" lon="6.416000"><name>03. Ugine</name><type>view</type></rtept>
+    <rtept lat="45.872000" lon="6.464000"><name>04. Col des Aravis</name><type>view</type></rtept>
+    <rtept lat="45.904000" lon="6.423000"><name>05. La Clusaz coffee</name><type>break</type></rtept>
+    <rtept lat="45.882000" lon="6.326000"><name>06. Thônes</name><type>view</type></rtept>
+    <rtept lat="45.899000" lon="6.129000"><name>07. Lake Annecy picnic</name><type>break</type></rtept>
+    <rtept lat="45.899000" lon="6.129000"><name>08. Annecy / fuel</name><type>fuel</type></rtept>
+    <rtept lat="46.204400" lon="6.143200"><name>09. Geneva</name><type>night</type></rtept>
+  </rte>
+</gpx>

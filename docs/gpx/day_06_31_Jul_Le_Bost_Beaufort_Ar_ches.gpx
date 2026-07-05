@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gpx version="1.1" creator="ChatGPT Road Book v3 - routepoints only, no misleading straight-line track" xmlns="http://www.topografix.com/GPX/1/1">
+  <metadata>
+    <name>31 Jul - Le Bost → Beaufort / Arêches</name>
+    <desc>350 km · 5h20–5h50 · Efficient transfer plus first Alpine approach after Albertville. This is a key move but still under your 6h limit. Import as a route in OsmAnd/Kurviger/Calimoto/Garmin and let the app calculate roads between routepoints.</desc>
+  </metadata>
+  <wpt lat="45.999000" lon="2.693000"><name>Le Bost / Biollet</name><type>start</type></wpt>
+  <wpt lat="46.036000" lon="4.068000"><name>Roanne / fuel</name><type>fuel</type></wpt>
+  <wpt lat="45.764000" lon="4.835000"><name>Lyon north/east bypass</name><type>view</type></wpt>
+  <wpt lat="45.550000" lon="5.810000"><name>Lac d’Aiguebelette</name><type>break</type></wpt>
+  <wpt lat="45.564000" lon="5.917000"><name>Chambéry / fuel option</name><type>fuel</type></wpt>
+  <wpt lat="45.675000" lon="6.392000"><name>Albertville / final fuel</name><type>fuel</type></wpt>
+  <wpt lat="45.717000" lon="6.573000"><name>Beaufort / Camping Domelin</name><type>camp</type></wpt>
+  <rte>
+    <name>31 Jul - Le Bost → Beaufort / Arêches</name>
+    <desc>350 km · 5h20–5h50 · Transfer · road-calculated route from curated via points.</desc>
+    <rtept lat="45.999000" lon="2.693000"><name>01. Le Bost / Biollet</name><type>start</type></rtept>
+    <rtept lat="46.036000" lon="4.068000"><name>02. Roanne / fuel</name><type>fuel</type></rtept>
+    <rtept lat="45.764000" lon="4.835000"><name>03. Lyon north/east bypass</name><type>view</type></rtept>
+    <rtept lat="45.550000" lon="5.810000"><name>04. Lac d’Aiguebelette</name><type>break</type></rtept>
+    <rtept lat="45.564000" lon="5.917000"><name>05. Chambéry / fuel option</name><type>fuel</type></rtept>
+    <rtept lat="45.675000" lon="6.392000"><name>06. Albertville / final fuel</name><type>fuel</type></rtept>
+    <rtept lat="45.717000" lon="6.573000"><name>07. Beaufort / Camping Domelin</name><type>camp</type></rtept>
+  </rte>
+</gpx>

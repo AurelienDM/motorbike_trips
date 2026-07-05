@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gpx version="1.1" creator="ChatGPT Road Book v3 - full trip routepoints" xmlns="http://www.topografix.com/GPX/1/1">
+<metadata><name>Ducati Scrambler Alps Road Book v3 - Full Trip Routepoints</name><desc>Full trip made of curated day routepoints. Import day files individually for cleaner navigation.</desc></metadata>
+<wpt lat="52.070500" lon="4.300700"><name>D01.01 The Hague</name><type>start</type></wpt>
+<wpt lat="51.571900" lon="4.768300"><name>D01.02 Breda</name><type>break</type></wpt>
+<wpt lat="51.441600" lon="5.469700"><name>D01.03 Eindhoven fuel option</name><type>fuel</type></wpt>
+<wpt lat="50.632600" lon="5.579700"><name>D01.04 Liège / fuel</name><type>fuel</type></wpt>
+<wpt lat="50.587000" lon="5.975000"><name>D01.05 Lac de la Gileppe / nature stop</name><type>break</type></wpt>
+<wpt lat="50.054000" lon="6.031000"><name>D01.06 Clervaux</name><type>view</type></wpt>
+<wpt lat="49.952000" lon="6.020000"><name>D01.07 Camping Kautenbach</name><type>camp</type></wpt>
+<wpt lat="49.952000" lon="6.020000"><name>D02.01 Camping Kautenbach</name><type>start</type></wpt>
+<wpt lat="49.611600" lon="6.131900"><name>D02.02 Luxembourg / fuel</name><type>fuel</type></wpt>
+<wpt lat="49.159000" lon="5.383000"><name>D02.03 Verdun coffee stop</name><type>break</type></wpt>
+<wpt lat="48.594000" lon="4.782000"><name>D02.04 Lac du Der / picnic</name><type>break</type></wpt>
+<wpt lat="48.297000" lon="4.074000"><name>D02.05 Troyes bypass</name><type>view</type></wpt>
+<wpt lat="47.280000" lon="4.228000"><name>D02.06 Saulieu / fuel</name><type>fuel</type></wpt>
+<wpt lat="47.187000" lon="4.061000"><name>D02.07 Lac des Settons</name><type>camp</type></wpt>
+<wpt lat="47.187000" lon="4.061000"><name>D03.01 Lac des Settons</name><type>start</type></wpt>
+<wpt lat="47.217000" lon="4.023000"><name>D03.02 Montsauche-les-Settons / fuel</name><type>fuel</type></wpt>
+<wpt lat="47.133000" lon="3.882000"><name>D03.03 Lac de Pannecière</name><type>break</type></wpt>
+<wpt lat="47.067000" lon="3.933000"><name>D03.04 Château-Chinon</name><type>view</type></wpt>
+<wpt lat="47.240000" lon="3.836000"><name>D03.05 Lac de Chaumeçon</name><type>break</type></wpt>
+<wpt lat="47.187000" lon="4.061000"><name>D03.06 Lac des Settons</name><type>camp</type></wpt>
+<wpt lat="47.187000" lon="4.061000"><name>D04.01 Lac des Settons</name><type>start</type></wpt>
+<wpt lat="46.990000" lon="3.159000"><name>D04.02 Nevers / coffee</name><type>break</type></wpt>
+<wpt lat="46.568000" lon="3.334000"><name>D04.03 Moulins / Allier break</name><type>break</type></wpt>
+<wpt lat="46.340000" lon="2.603000"><name>D04.04 Montluçon / fuel</name><type>fuel</type></wpt>
+<wpt lat="45.999000" lon="2.693000"><name>D04.05 Le Bost / Biollet</name><type>night</type></wpt>
+<wpt lat="45.999000" lon="2.693000"><name>D05.01 Le Bost / Biollet</name><type>start</type></wpt>
+<wpt lat="45.918000" lon="2.790000"><name>D05.02 Barrage des Fades</name><type>break</type></wpt>
+<wpt lat="45.833000" lon="2.853000"><name>D05.03 Pontgibaud fuel option</name><type>fuel</type></wpt>
+<wpt lat="45.810000" lon="2.970000"><name>D05.04 Col des Goules / Chaîne des Puys</name><type>view</type></wpt>
+<wpt lat="45.992000" lon="2.983000"><name>D05.05 Gour de Tazenat</name><type>break</type></wpt>
+<wpt lat="45.999000" lon="2.693000"><name>D05.06 Le Bost / Biollet</name><type>night</type></wpt>
+<wpt lat="45.999000" lon="2.693000"><name>D06.01 Le Bost / Biollet</name><type>start</type></wpt>
+<wpt lat="46.036000" lon="4.068000"><name>D06.02 Roanne / fuel</name><type>fuel</type></wpt>
+<wpt lat="45.764000" lon="4.835000"><name>D06.03 Lyon north/east bypass</name><type>view</type></wpt>
+<wpt lat="45.550000" lon="5.810000"><name>D06.04 Lac d’Aiguebelette</name><type>break</type></wpt>
+<wpt lat="45.564000" lon="5.917000"><name>D06.05 Chambéry / fuel option</name><type>fuel</type></wpt>
+<wpt lat="45.675000" lon="6.392000"><name>D06.06 Albertville / final fuel</name><type>fuel</type></wpt>
+<wpt lat="45.717000" lon="6.573000"><name>D06.07 Beaufort / Camping Domelin</name><type>camp</type></wpt>
+<wpt lat="45.717000" lon="6.573000"><name>D07.01 Beaufort / Camping Domelin</name><type>start</type></wpt>
+<wpt lat="45.687000" lon="6.568000"><name>D07.02 Arêches</name><type>view</type></wpt>
+<wpt lat="45.704000" lon="6.586000"><name>D07.03 Col du Pré</name><type>view</type></wpt>
+<wpt lat="45.692000" lon="6.609000"><name>D07.04 Barrage de Roselend picnic</name><type>break</type></wpt>
+<wpt lat="45.690000" lon="6.620000"><name>D07.05 Lac de Roselend</name><type>break</type></wpt>
+<wpt lat="45.694000" lon="6.690000"><name>D07.06 Cormet de Roselend</name><type>view</type></wpt>
+<wpt lat="45.697000" lon="6.735000"><name>D07.07 Les Chapieux</name><type>break</type></wpt>
+<wpt lat="45.617000" lon="6.769000"><name>D07.08 Bourg-Saint-Maurice fuel option</name><type>fuel</type></wpt>
+<wpt lat="45.717000" lon="6.573000"><name>D07.09 Beaufort / Camping Domelin</name><type>camp</type></wpt>
+<wpt lat="45.717000" lon="6.573000"><name>D08.01 Beaufort / Camping Domelin</name><type>start</type></wpt>
+<wpt lat="45.749000" lon="6.590000"><name>D08.02 Hauteluce</name><type>view</type></wpt>
+<wpt lat="45.758000" lon="6.538000"><name>D08.03 Les Saisies / fuel option</name><type>fuel</type></wpt>
+<wpt lat="45.809000" lon="6.521000"><name>D08.04 Notre-Dame-de-Bellecombe</name><type>view</type></wpt>
+<wpt lat="45.820000" lon="6.515000"><name>D08.05 Flumet</name><type>break</type></wpt>
+<wpt lat="45.751000" lon="6.416000"><name>D08.06 Ugine</name><type>fuel</type></wpt>
+<wpt lat="45.717000" lon="6.573000"><name>D08.07 Beaufort / Camping Domelin</name><type>camp</type></wpt>
+<wpt lat="45.717000" lon="6.573000"><name>D09.01 Beaufort / Camping Domelin</name><type>start</type></wpt>
+<wpt lat="45.718000" lon="6.573000"><name>D09.02 Beaufort village coffee/fuel</name><type>fuel</type></wpt>
+<wpt lat="45.657000" lon="6.600000"><name>D09.03 Lac de Saint-Guérin picnic</name><type>break</type></wpt>
+<wpt lat="45.687000" lon="6.568000"><name>D09.04 Arêches</name><type>view</type></wpt>
+<wpt lat="45.717000" lon="6.573000"><name>D09.05 Beaufort / Camping Domelin</name><type>camp</type></wpt>
+<wpt lat="45.717000" lon="6.573000"><name>D10.01 Beaufort / Camping Domelin</name><type>start</type></wpt>
+<wpt lat="45.704000" lon="6.586000"><name>D10.02 Col du Pré</name><type>view</type></wpt>
+<wpt lat="45.690000" lon="6.620000"><name>D10.03 Lac de Roselend</name><type>break</type></wpt>
+<wpt lat="45.694000" lon="6.690000"><name>D10.04 Cormet de Roselend</name><type>view</type></wpt>
+<wpt lat="45.697000" lon="6.735000"><name>D10.05 Les Chapieux</name><type>break</type></wpt>
+<wpt lat="45.617000" lon="6.769000"><name>D10.06 Bourg-Saint-Maurice / fuel</name><type>fuel</type></wpt>
+<wpt lat="45.617000" lon="6.769000"><name>D10.07 Bourg-Saint-Maurice / camp</name><type>camp</type></wpt>
+<wpt lat="45.617000" lon="6.769000"><name>D11.01 Bourg-Saint-Maurice</name><type>start</type></wpt>
+<wpt lat="45.623000" lon="6.801000"><name>D11.02 Séez / fuel</name><type>fuel</type></wpt>
+<wpt lat="45.628000" lon="6.848000"><name>D11.03 La Rosière</name><type>view</type></wpt>
+<wpt lat="45.680000" lon="6.884000"><name>D11.04 Petit St Bernard Pass</name><type>view</type></wpt>
+<wpt lat="45.675000" lon="6.902000"><name>D11.05 Lago Verney picnic</name><type>break</type></wpt>
+<wpt lat="45.713000" lon="6.949000"><name>D11.06 La Thuile / espresso + fuel</name><type>fuel</type></wpt>
+<wpt lat="45.680000" lon="6.884000"><name>D11.07 Petit St Bernard Pass return</name><type>view</type></wpt>
+<wpt lat="45.617000" lon="6.769000"><name>D11.08 Bourg-Saint-Maurice</name><type>camp</type></wpt>
+<wpt lat="45.617000" lon="6.769000"><name>D12.01 Bourg-Saint-Maurice</name><type>start</type></wpt>
+<wpt lat="45.590000" lon="6.884000"><name>D12.02 Sainte-Foy-Tarentaise</name><type>view</type></wpt>
+<wpt lat="45.477000" lon="6.940000"><name>D12.03 Tignes / Lac du Chevril</name><type>break</type></wpt>
+<wpt lat="45.448000" lon="6.980000"><name>D12.04 Val d’Isère / fuel</name><type>fuel</type></wpt>
+<wpt lat="45.417000" lon="7.030000"><name>D12.05 Col de l’Iseran</name><type>view</type></wpt>
+<wpt lat="45.371000" lon="7.050000"><name>D12.06 Bonneval-sur-Arc picnic</name><type>break</type></wpt>
+<wpt lat="45.417000" lon="7.030000"><name>D12.07 Col de l’Iseran return</name><type>view</type></wpt>
+<wpt lat="45.617000" lon="6.769000"><name>D12.08 Bourg-Saint-Maurice</name><type>camp</type></wpt>
+<wpt lat="45.617000" lon="6.769000"><name>D13.01 Bourg-Saint-Maurice</name><type>start</type></wpt>
+<wpt lat="45.675000" lon="6.392000"><name>D13.02 Albertville / fuel</name><type>fuel</type></wpt>
+<wpt lat="45.751000" lon="6.416000"><name>D13.03 Ugine</name><type>view</type></wpt>
+<wpt lat="45.872000" lon="6.464000"><name>D13.04 Col des Aravis</name><type>view</type></wpt>
+<wpt lat="45.904000" lon="6.423000"><name>D13.05 La Clusaz coffee</name><type>break</type></wpt>
+<wpt lat="45.882000" lon="6.326000"><name>D13.06 Thônes</name><type>view</type></wpt>
+<wpt lat="45.899000" lon="6.129000"><name>D13.07 Lake Annecy picnic</name><type>break</type></wpt>
+<wpt lat="45.899000" lon="6.129000"><name>D13.08 Annecy / fuel</name><type>fuel</type></wpt>
+<wpt lat="46.204400" lon="6.143200"><name>D13.09 Geneva</name><type>night</type></wpt>
+<wpt lat="46.204400" lon="6.143200"><name>D14.01 Geneva</name><type>start</type></wpt>
+<wpt lat="46.137000" lon="6.188000"><name>D14.02 Mont Salève</name><type>view</type></wpt>
+<wpt lat="46.364000" lon="6.017000"><name>D14.03 Col de la Faucille / Jura view</name><type>view</type></wpt>
+<wpt lat="46.358000" lon="6.135000"><name>D14.04 Divonne-les-Bains coffee</name><type>break</type></wpt>
+<wpt lat="46.204400" lon="6.143200"><name>D14.05 Geneva / top-up fuel</name><type>fuel</type></wpt>
+<wpt lat="46.204400" lon="6.143200"><name>D15.01 Geneva</name><type>start</type></wpt>
+<wpt lat="46.383000" lon="6.239000"><name>D15.02 Nyon / lake road</name><type>view</type></wpt>
+<wpt lat="46.584000" lon="7.083000"><name>D15.03 Gruyères coffee</name><type>break</type></wpt>
+<wpt lat="46.592000" lon="7.341000"><name>D15.04 Jaunpass</name><type>view</type></wpt>
+<wpt lat="46.688000" lon="7.679000"><name>D15.05 Spiez / Lake Thun</name><type>break</type></wpt>
+<wpt lat="46.686000" lon="7.863000"><name>D15.06 Interlaken / fuel</name><type>fuel</type></wpt>
+<wpt lat="46.735000" lon="8.045000"><name>D15.07 Lake Brienz</name><type>break</type></wpt>
+<wpt lat="46.728000" lon="8.187000"><name>D15.08 Meiringen / Innertkirchen</name><type>camp</type></wpt>
+<wpt lat="46.707000" lon="8.227000"><name>D16.01 Innertkirchen</name><type>start</type></wpt>
+<wpt lat="46.562000" lon="8.337000"><name>D16.02 Grimsel Pass</name><type>view</type></wpt>
+<wpt lat="46.563000" lon="8.363000"><name>D16.03 Gletsch</name><type>break</type></wpt>
+<wpt lat="46.572000" lon="8.415000"><name>D16.04 Furka Pass</name><type>view</type></wpt>
+<wpt lat="46.635000" lon="8.594000"><name>D16.05 Andermatt / fuel + coffee</name><type>fuel</type></wpt>
+<wpt lat="46.706000" lon="8.599000"><name>D16.06 Wassen</name><type>view</type></wpt>
+<wpt lat="46.729000" lon="8.448000"><name>D16.07 Susten Pass</name><type>view</type></wpt>
+<wpt lat="46.707000" lon="8.227000"><name>D16.08 Innertkirchen</name><type>camp</type></wpt>
+<wpt lat="46.728000" lon="8.187000"><name>D17.01 Meiringen</name><type>start</type></wpt>
+<wpt lat="46.756000" lon="8.134000"><name>D17.02 Brünig Pass</name><type>view</type></wpt>
+<wpt lat="46.785000" lon="8.166000"><name>D17.03 Lungernsee</name><type>break</type></wpt>
+<wpt lat="47.050200" lon="8.309300"><name>D17.04 Lucerne / fuel</name><type>fuel</type></wpt>
+<wpt lat="47.166000" lon="8.515000"><name>D17.05 Lake Zug</name><type>break</type></wpt>
+<wpt lat="47.376900" lon="8.541700"><name>D17.06 Zurich</name><type>night</type></wpt>
+<wpt lat="47.376900" lon="8.541700"><name>D18.01 Zurich</name><type>start</type></wpt>
+<wpt lat="47.559600" lon="7.588600"><name>D18.02 Basel / fuel</name><type>fuel</type></wpt>
+<wpt lat="47.999000" lon="7.842000"><name>D18.03 Freiburg im Breisgau</name><type>fuel</type></wpt>
+<wpt lat="47.904000" lon="8.153000"><name>D18.04 Titisee / Black Forest</name><type>break</type></wpt>
+<wpt lat="47.818000" lon="8.180000"><name>D18.05 Schluchsee</name><type>break</type></wpt>
+<wpt lat="48.079000" lon="7.358000"><name>D18.06 Colmar / Alsace</name><type>view</type></wpt>
+<wpt lat="48.041000" lon="7.135000"><name>D18.07 Munster valley</name><type>view</type></wpt>
+<wpt lat="47.997000" lon="7.030000"><name>D18.08 Mittlach / Langenwasen</name><type>camp</type></wpt>
+<wpt lat="47.997000" lon="7.030000"><name>D19.01 Mittlach / Vosges</name><type>start</type></wpt>
+<wpt lat="48.064000" lon="7.022000"><name>D19.02 Col de la Schlucht</name><type>view</type></wpt>
+<wpt lat="48.692000" lon="6.184000"><name>D19.03 Nancy coffee</name><type>break</type></wpt>
+<wpt lat="49.119300" lon="6.175700"><name>D19.04 Metz / fuel</name><type>fuel</type></wpt>
+<wpt lat="49.611600" lon="6.131900"><name>D19.05 Luxembourg / coffee</name><type>break</type></wpt>
+<wpt lat="50.003000" lon="5.718000"><name>D19.06 Bastogne</name><type>view</type></wpt>
+<wpt lat="50.492000" lon="5.866000"><name>D19.07 Spa / Camping Spa d’Or</name><type>camp</type></wpt>
+<wpt lat="50.492000" lon="5.866000"><name>D20.01 Spa / Belgian Ardennes</name><type>start</type></wpt>
+<wpt lat="50.632600" lon="5.579700"><name>D20.02 Liège / fuel</name><type>fuel</type></wpt>
+<wpt lat="50.851400" lon="5.691000"><name>D20.03 Maastricht / coffee</name><type>break</type></wpt>
+<wpt lat="51.441600" lon="5.469700"><name>D20.04 Eindhoven / fuel</name><type>fuel</type></wpt>
+<wpt lat="51.571900" lon="4.768300"><name>D20.05 Breda break</name><type>break</type></wpt>
+<wpt lat="52.070500" lon="4.300700"><name>D20.06 The Hague</name><type>night</type></wpt>
+</gpx>

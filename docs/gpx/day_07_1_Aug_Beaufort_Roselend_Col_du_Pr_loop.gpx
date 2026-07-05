@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gpx version="1.1" creator="ChatGPT Road Book v3 - routepoints only, no misleading straight-line track" xmlns="http://www.topografix.com/GPX/1/1">
+  <metadata>
+    <name>1 Aug - Beaufort → Roselend / Col du Pré loop</name>
+    <desc>150 km · 4h00–5h00 · Alpine paved roads plus short easy gravel/access roads only if open and signed. Ride unloaded. Import as a route in OsmAnd/Kurviger/Calimoto/Garmin and let the app calculate roads between routepoints.</desc>
+  </metadata>
+  <wpt lat="45.717000" lon="6.573000"><name>Beaufort / Camping Domelin</name><type>start</type></wpt>
+  <wpt lat="45.687000" lon="6.568000"><name>Arêches</name><type>view</type></wpt>
+  <wpt lat="45.704000" lon="6.586000"><name>Col du Pré</name><type>view</type></wpt>
+  <wpt lat="45.692000" lon="6.609000"><name>Barrage de Roselend picnic</name><type>break</type></wpt>
+  <wpt lat="45.690000" lon="6.620000"><name>Lac de Roselend</name><type>break</type></wpt>
+  <wpt lat="45.694000" lon="6.690000"><name>Cormet de Roselend</name><type>view</type></wpt>
+  <wpt lat="45.697000" lon="6.735000"><name>Les Chapieux</name><type>break</type></wpt>
+  <wpt lat="45.617000" lon="6.769000"><name>Bourg-Saint-Maurice fuel option</name><type>fuel</type></wpt>
+  <wpt lat="45.717000" lon="6.573000"><name>Beaufort / Camping Domelin</name><type>camp</type></wpt>
+  <rte>
+    <name>1 Aug - Beaufort → Roselend / Col du Pré loop</name>
+    <desc>150 km · 4h00–5h00 · Base loop · road-calculated route from curated via points.</desc>
+    <rtept lat="45.717000" lon="6.573000"><name>01. Beaufort / Camping Domelin</name><type>start</type></rtept>
+    <rtept lat="45.687000" lon="6.568000"><name>02. Arêches</name><type>view</type></rtept>
+    <rtept lat="45.704000" lon="6.586000"><name>03. Col du Pré</name><type>view</type></rtept>
+    <rtept lat="45.692000" lon="6.609000"><name>04. Barrage de Roselend picnic</name><type>break</type></rtept>
+    <rtept lat="45.690000" lon="6.620000"><name>05. Lac de Roselend</name><type>break</type></rtept>
+    <rtept lat="45.694000" lon="6.690000"><name>06. Cormet de Roselend</name><type>view</type></rtept>
+    <rtept lat="45.697000" lon="6.735000"><name>07. Les Chapieux</name><type>break</type></rtept>
+    <rtept lat="45.617000" lon="6.769000"><name>08. Bourg-Saint-Maurice fuel option</name><type>fuel</type></rtept>
+    <rtept lat="45.717000" lon="6.573000"><name>09. Beaufort / Camping Domelin</name><type>camp</type></rtept>
+  </rte>
+</gpx>

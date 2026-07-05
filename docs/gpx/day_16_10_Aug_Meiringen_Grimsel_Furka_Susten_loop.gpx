@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gpx version="1.1" creator="ChatGPT Road Book v3 - routepoints only, no misleading straight-line track" xmlns="http://www.topografix.com/GPX/1/1">
+  <metadata>
+    <name>10 Aug - Meiringen → Grimsel – Furka – Susten loop</name>
+    <desc>220 km · 5h00–5h50 · Classic Swiss high passes. Paved, technical corners, concentration-heavy, no gravel required. Import as a route in OsmAnd/Kurviger/Calimoto/Garmin and let the app calculate roads between routepoints.</desc>
+  </metadata>
+  <wpt lat="46.707000" lon="8.227000"><name>Innertkirchen</name><type>start</type></wpt>
+  <wpt lat="46.562000" lon="8.337000"><name>Grimsel Pass</name><type>view</type></wpt>
+  <wpt lat="46.563000" lon="8.363000"><name>Gletsch</name><type>break</type></wpt>
+  <wpt lat="46.572000" lon="8.415000"><name>Furka Pass</name><type>view</type></wpt>
+  <wpt lat="46.635000" lon="8.594000"><name>Andermatt / fuel + coffee</name><type>fuel</type></wpt>
+  <wpt lat="46.706000" lon="8.599000"><name>Wassen</name><type>view</type></wpt>
+  <wpt lat="46.729000" lon="8.448000"><name>Susten Pass</name><type>view</type></wpt>
+  <wpt lat="46.707000" lon="8.227000"><name>Innertkirchen</name><type>camp</type></wpt>
+  <rte>
+    <name>10 Aug - Meiringen → Grimsel – Furka – Susten loop</name>
+    <desc>220 km · 5h00–5h50 · Base loop · road-calculated route from curated via points.</desc>
+    <rtept lat="46.707000" lon="8.227000"><name>01. Innertkirchen</name><type>start</type></rtept>
+    <rtept lat="46.562000" lon="8.337000"><name>02. Grimsel Pass</name><type>view</type></rtept>
+    <rtept lat="46.563000" lon="8.363000"><name>03. Gletsch</name><type>break</type></rtept>
+    <rtept lat="46.572000" lon="8.415000"><name>04. Furka Pass</name><type>view</type></rtept>
+    <rtept lat="46.635000" lon="8.594000"><name>05. Andermatt / fuel + coffee</name><type>fuel</type></rtept>
+    <rtept lat="46.706000" lon="8.599000"><name>06. Wassen</name><type>view</type></rtept>
+    <rtept lat="46.729000" lon="8.448000"><name>07. Susten Pass</name><type>view</type></rtept>
+    <rtept lat="46.707000" lon="8.227000"><name>08. Innertkirchen</name><type>camp</type></rtept>
+  </rte>
+</gpx>

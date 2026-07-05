@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gpx version="1.1" creator="ChatGPT Road Book v3 - routepoints only, no misleading straight-line track" xmlns="http://www.topografix.com/GPX/1/1">
+  <metadata>
+    <name>22 Jul - Lac des Settons → Morvan loop</name>
+    <desc>120 km · 2h30–4h00 · Small forest roads, lake roads, and only easy open gravel if clearly legal. A low-pressure test day. Import as a route in OsmAnd/Kurviger/Calimoto/Garmin and let the app calculate roads between routepoints.</desc>
+  </metadata>
+  <wpt lat="47.187000" lon="4.061000"><name>Lac des Settons</name><type>start</type></wpt>
+  <wpt lat="47.217000" lon="4.023000"><name>Montsauche-les-Settons / fuel</name><type>fuel</type></wpt>
+  <wpt lat="47.133000" lon="3.882000"><name>Lac de Pannecière</name><type>break</type></wpt>
+  <wpt lat="47.067000" lon="3.933000"><name>Château-Chinon</name><type>view</type></wpt>
+  <wpt lat="47.240000" lon="3.836000"><name>Lac de Chaumeçon</name><type>break</type></wpt>
+  <wpt lat="47.187000" lon="4.061000"><name>Lac des Settons</name><type>camp</type></wpt>
+  <rte>
+    <name>22 Jul - Lac des Settons → Morvan loop</name>
+    <desc>120 km · 2h30–4h00 · Base loop · road-calculated route from curated via points.</desc>
+    <rtept lat="47.187000" lon="4.061000"><name>01. Lac des Settons</name><type>start</type></rtept>
+    <rtept lat="47.217000" lon="4.023000"><name>02. Montsauche-les-Settons / fuel</name><type>fuel</type></rtept>
+    <rtept lat="47.133000" lon="3.882000"><name>03. Lac de Pannecière</name><type>break</type></rtept>
+    <rtept lat="47.067000" lon="3.933000"><name>04. Château-Chinon</name><type>view</type></rtept>
+    <rtept lat="47.240000" lon="3.836000"><name>05. Lac de Chaumeçon</name><type>break</type></rtept>
+    <rtept lat="47.187000" lon="4.061000"><name>06. Lac des Settons</name><type>camp</type></rtept>
+  </rte>
+</gpx>

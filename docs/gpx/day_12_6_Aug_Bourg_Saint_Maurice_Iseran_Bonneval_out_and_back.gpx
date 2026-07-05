@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gpx version="1.1" creator="ChatGPT Road Book v3 - routepoints only, no misleading straight-line track" xmlns="http://www.topografix.com/GPX/1/1">
+  <metadata>
+    <name>6 Aug - Bourg-Saint-Maurice → Iseran / Bonneval out-and-back</name>
+    <desc>185 km · 4h45–5h45 · High alpine paved out-and-back. This keeps the day under your 6h comfort limit and avoids a very long loop with luggage fatigue. Import as a route in OsmAnd/Kurviger/Calimoto/Garmin and let the app calculate roads between routepoints.</desc>
+  </metadata>
+  <wpt lat="45.617000" lon="6.769000"><name>Bourg-Saint-Maurice</name><type>start</type></wpt>
+  <wpt lat="45.590000" lon="6.884000"><name>Sainte-Foy-Tarentaise</name><type>view</type></wpt>
+  <wpt lat="45.477000" lon="6.940000"><name>Tignes / Lac du Chevril</name><type>break</type></wpt>
+  <wpt lat="45.448000" lon="6.980000"><name>Val d’Isère / fuel</name><type>fuel</type></wpt>
+  <wpt lat="45.417000" lon="7.030000"><name>Col de l’Iseran</name><type>view</type></wpt>
+  <wpt lat="45.371000" lon="7.050000"><name>Bonneval-sur-Arc picnic</name><type>break</type></wpt>
+  <wpt lat="45.417000" lon="7.030000"><name>Col de l’Iseran return</name><type>view</type></wpt>
+  <wpt lat="45.617000" lon="6.769000"><name>Bourg-Saint-Maurice</name><type>camp</type></wpt>
+  <rte>
+    <name>6 Aug - Bourg-Saint-Maurice → Iseran / Bonneval out-and-back</name>
+    <desc>185 km · 4h45–5h45 · Base loop · road-calculated route from curated via points.</desc>
+    <rtept lat="45.617000" lon="6.769000"><name>01. Bourg-Saint-Maurice</name><type>start</type></rtept>
+    <rtept lat="45.590000" lon="6.884000"><name>02. Sainte-Foy-Tarentaise</name><type>view</type></rtept>
+    <rtept lat="45.477000" lon="6.940000"><name>03. Tignes / Lac du Chevril</name><type>break</type></rtept>
+    <rtept lat="45.448000" lon="6.980000"><name>04. Val d’Isère / fuel</name><type>fuel</type></rtept>
+    <rtept lat="45.417000" lon="7.030000"><name>05. Col de l’Iseran</name><type>view</type></rtept>
+    <rtept lat="45.371000" lon="7.050000"><name>06. Bonneval-sur-Arc picnic</name><type>break</type></rtept>
+    <rtept lat="45.417000" lon="7.030000"><name>07. Col de l’Iseran return</name><type>view</type></rtept>
+    <rtept lat="45.617000" lon="6.769000"><name>08. Bourg-Saint-Maurice</name><type>camp</type></rtept>
+  </rte>
+</gpx>
