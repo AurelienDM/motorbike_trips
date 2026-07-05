@@ -6,6 +6,9 @@
   const THEME_KEY = "roadbookThemeMode";
   const DAY_KEY = "roadbookActiveDay";
   const TILE_SIZE = 256;
+  const SWIPE_MIN_DISTANCE = 70;
+  const SWIPE_MAX_TIME = 900;
+  const SIGHT_MATCHER = /★|view|sight|lac|lake|see|river|col\b|pass|gorge|valley|forest|glacier|waterfall|cascade|roselend|iseran|grimsel|furka|susten|jura|sal[eè]ve|morvan|ardenne|clervaux|beaufort|bourg|chapieux|bonneval|geneva|zurich|gruy[eè]res|sion|chamonix|colmar|munster|bastogne|spa|maastricht|titisee|schluchsee|settons|gileppe/i;
 
   function htmlEscape(value) {
     return clean(value)
@@ -220,13 +223,15 @@
       ridePlan: sectionText(card, "Ride plan"),
       fuelStops: stops.filter((stop) => /fuel/i.test(`${stop.name} ${stop.type}`)),
       breakStops: stops.filter((stop) => /break|coffee|nature|picnic|lake|river/i.test(`${stop.name} ${stop.type}`)),
-      campStops: stops.filter((stop) => /camp|night|home|friends/i.test(`${stop.name} ${stop.type}`))
+      campStops: stops.filter((stop) => /camp|night|home|friends/i.test(`${stop.name} ${stop.type}`)),
+      sightStops: stops.filter(isSightStop)
     };
   }
 
   const days = cards.map(dayData);
   let currentDay = savedDay();
   let themeMode = window.localStorage.getItem(THEME_KEY) || "day";
+  let todaySwipeInstalled = false;
 
   function savedDay() {
     const saved = Number(window.localStorage.getItem(DAY_KEY) || 0);
@@ -448,6 +453,7 @@
     buildBottomNav();
     installCardMaps();
     wireAppEvents();
+    installTodaySwipe();
     setTheme(themeMode);
     updateActiveNav();
     setCurrentDay(currentDay);
@@ -643,6 +649,168 @@
     ].join("");
   }
 
+  function isSightStop(stop) {
+    const text = `${stop.name} ${stop.type}`;
+    return SIGHT_MATCHER.test(text) && !/fuel|start|home/i.test(text);
+  }
+
+  function sightName(stop) {
+    return clean(stop.name
+      .replace(/\s*\/\s*(coffee|break|nature stop|picnic|fuel option|fuel|camp|night)\b.*$/i, "")
+      .replace(/\s+-\s*(coffee|break|nature stop|picnic|fuel|camp|night)\b.*$/i, ""));
+  }
+
+  function sightTheme(stop) {
+    const text = `${stop.name} ${stop.type}`.toLowerCase();
+    if (/lac|lake|see|river|gileppe|settons|titisee|schluchsee|water/.test(text)) return "lake";
+    if (/col\b|pass|iseran|grimsel|furka|susten|roselend|schlucht|bernard|pré|pre|chapieux|glacier/.test(text)) return "mountain";
+    if (/camp|camping|bivouac/.test(text)) return "camp";
+    if (/forest|morvan|ardenne|vosges|jura|valley|vall[eé]e|munster/.test(text)) return "forest";
+    return "town";
+  }
+
+  function sightDescription(stop, day) {
+    const text = `${stop.name} ${stop.type} ${dayRegion(day)}`.toLowerCase();
+    if (/lac|lake|see|river|gileppe|settons|titisee|schluchsee|water/.test(text)) {
+      return "Water-side pause for a short walk, snack, and quiet reset before the next riding section.";
+    }
+    if (/col\b|pass|iseran|grimsel|furka|susten|roselend|schlucht|bernard|pré|pre|chapieux|glacier/.test(text)) {
+      return "Mountain-road viewpoint with the kind of short stop that makes the day feel bigger.";
+    }
+    if (/forest|morvan|ardenne|vosges|jura|valley|vall[eé]e|munster/.test(text)) {
+      return "Green valley or forest stop, useful for a calm break away from traffic.";
+    }
+    if (/camp|camping/.test(text)) {
+      return "End-of-day anchor near the route, good for checking in and planning tomorrow.";
+    }
+    return `Compact stop near ${dayRegion(day)} for a quick look around without adding a big detour.`;
+  }
+
+  function sightInitials(name) {
+    const initials = clean(name).split(/[\s/-]+/)
+      .filter(Boolean)
+      .slice(0, 2)
+      .map((word) => word.charAt(0))
+      .join("")
+      .toUpperCase();
+    return initials || "•";
+  }
+
+  function sightPalette(theme) {
+    const palettes = {
+      lake: ["#b9dcff", "#5a9d73", "#2d6cdf", "#f7fbff"],
+      mountain: ["#dce8ff", "#556d60", "#c98533", "#fffaf0"],
+      forest: ["#cfe9cf", "#2f7b4f", "#6b8f3b", "#f9f4dc"],
+      camp: ["#d7e8ff", "#447556", "#e6b450", "#fff8e7"],
+      town: ["#e7edf3", "#697c72", "#c36a3d", "#fffaf0"]
+    };
+    return palettes[theme] || palettes.town;
+  }
+
+  function sightPictureMarkup(sight) {
+    const [sky, land, accent, light] = sightPalette(sight.theme);
+    const initials = htmlEscape(sightInitials(sight.name));
+    const label = htmlEscape(`${sight.name} visual`);
+    const base = [
+      `<svg class="sight-picture" viewBox="0 0 240 136" role="img" aria-label="${label}">`,
+      '<rect width="240" height="136" rx="0" fill="' + sky + '"/>',
+      `<circle cx="202" cy="30" r="18" fill="${light}" opacity="0.9"/>`
+    ];
+    const marks = {
+      lake: [
+        `<path d="M0 70 C52 52 78 66 116 54 C154 42 186 58 240 46 V136 H0Z" fill="${land}" opacity="0.92"/>`,
+        `<path d="M0 88 C48 78 83 94 124 84 C165 74 197 91 240 82 V136 H0Z" fill="${accent}" opacity="0.9"/>`,
+        `<path d="M36 106 C76 98 102 111 138 103 C174 95 196 106 218 101" fill="none" stroke="${light}" stroke-width="3" opacity="0.72"/>`
+      ],
+      mountain: [
+        `<path d="M0 98 L54 44 L82 74 L120 24 L182 98 Z" fill="${land}" opacity="0.95"/>`,
+        `<path d="M70 98 L126 42 L156 68 L198 31 L240 98 Z" fill="#22392c" opacity="0.78"/>`,
+        `<path d="M120 24 L106 50 L128 43 L140 61 Z" fill="${light}" opacity="0.88"/>`,
+        `<path d="M38 113 C86 96 142 125 204 101" fill="none" stroke="${accent}" stroke-width="7" stroke-linecap="round"/>`
+      ],
+      forest: [
+        `<path d="M0 78 C46 48 80 70 121 48 C166 24 194 52 240 38 V136 H0Z" fill="${land}" opacity="0.9"/>`,
+        `<path d="M22 104 l16-30 16 30h-9l11 20H20l11-20z M96 108 l19-38 19 38h-10l13 23H91l14-23z M174 103 l17-34 17 34h-9l12 23h-40l12-23z" fill="#174a31" opacity="0.82"/>`,
+        `<path d="M0 114 C54 100 104 124 158 108 C194 98 216 106 240 98 V136 H0Z" fill="${accent}" opacity="0.65"/>`
+      ],
+      camp: [
+        `<path d="M0 78 C56 56 88 72 128 56 C168 40 198 54 240 44 V136 H0Z" fill="${land}" opacity="0.88"/>`,
+        `<path d="M72 112 L116 44 L160 112 Z" fill="${accent}"/>`,
+        `<path d="M116 44 L130 112 H102 Z" fill="${light}" opacity="0.88"/>`,
+        `<path d="M52 116 H188" stroke="#173421" stroke-width="6" stroke-linecap="round" opacity="0.55"/>`
+      ],
+      town: [
+        `<path d="M0 90 C50 76 84 93 126 80 C168 66 197 80 240 70 V136 H0Z" fill="${land}" opacity="0.75"/>`,
+        `<rect x="46" y="61" width="32" height="55" rx="4" fill="${light}" opacity="0.9"/>`,
+        `<rect x="86" y="42" width="38" height="74" rx="5" fill="${accent}" opacity="0.9"/>`,
+        `<rect x="134" y="70" width="56" height="46" rx="5" fill="#253d30" opacity="0.84"/>`,
+        `<path d="M28 116 H212" stroke="${light}" stroke-width="5" stroke-linecap="round" opacity="0.78"/>`
+      ]
+    };
+    return [
+      ...base,
+      ...(marks[sight.theme] || marks.town),
+      `<g class="sight-badge" transform="translate(16 16)"><rect width="48" height="32" rx="12" fill="rgba(6,17,12,0.74)"/><text x="24" y="22" text-anchor="middle">${initials}</text></g>`,
+      '</svg>'
+    ].join("");
+  }
+
+  function todaySights(day) {
+    const scenicBreaks = day.breakStops.filter((stop) => (
+      SIGHT_MATCHER.test(`${stop.name} ${stop.type}`) ||
+      /nature|picnic|lake|river/i.test(`${stop.name} ${stop.type}`)
+    ));
+    const usefulCamps = day.campStops.filter((stop) => !/home|friends/i.test(`${stop.name} ${stop.type}`));
+    const candidates = [
+      ...day.sightStops,
+      ...scenicBreaks,
+      ...usefulCamps
+    ];
+    const seen = new Set();
+    const sights = candidates.reduce((items, stop) => {
+      const name = sightName(stop);
+      const key = name.toLowerCase();
+      if (!name || seen.has(key) || /fuel|start|home/i.test(`${name} ${stop.type}`)) return items;
+      seen.add(key);
+      items.push({
+        name,
+        description: sightDescription(stop, day),
+        href: googleSearchLink(name),
+        theme: sightTheme(stop)
+      });
+      return items;
+    }, []);
+    if (sights.length) return sights.slice(0, 3);
+    const destination = dayDestination(day);
+    return [{
+      name: destination,
+      description: `Simple stop near ${dayRegion(day)} for a quick look around and route check.`,
+      href: googleSearchLink(destination),
+      theme: "town"
+    }];
+  }
+
+  function todaySightsMarkup(day) {
+    const sights = todaySights(day);
+    return [
+      '<section class="today-sights" aria-label="Nearby sights">',
+      '<div class="today-section-head"><span>Nearby sights</span><strong>Worth a stop</strong></div>',
+      '<div class="sight-strip">',
+      sights.map((sight, index) => [
+        `<a class="sight-card" target="_blank" rel="noopener" href="${htmlEscape(sight.href)}" aria-label="Open ${htmlEscape(sight.name)} in Maps">`,
+        sightPictureMarkup(sight),
+        '<span class="sight-copy">',
+        `<strong>${htmlEscape(sight.name)}</strong>`,
+        `<small>${htmlEscape(sight.description)}</small>`,
+        `<span class="sight-open">${icon("map")}<span>Maps</span></span>`,
+        '</span>',
+        '</a>'
+      ].join("")).join(""),
+      '</div>',
+      '</section>'
+    ].join("");
+  }
+
   function dayDestination(day) {
     const last = day.campStops[0]?.name || day.title.split("→").pop() || day.title;
     return clean(last.replace(/^[•C]\s*/, ""));
@@ -745,6 +913,7 @@
       }),
       day.camp ? actionLink("action camp-action today-main-action", day.camp, "Camp", "camp") : "",
       '</div>',
+      todaySightsMarkup(day),
       `<p class="today-note">${htmlEscape(day.ridePlan || day.note || "Keep the day simple and ride within the plan.")}</p>`,
       '<div class="today-activities">',
       todayActivities(day),
@@ -922,6 +1091,71 @@
     const floating = document.getElementById("fuel-floating-content");
     if (panel) panel.innerHTML = fuelShortcutMarkup();
     if (floating) floating.innerHTML = fuelShortcutMarkup(true);
+  }
+
+  function isInteractiveTarget(target) {
+    return Boolean(target.closest?.("a, button, input, select, textarea, summary, details, [role='button']"));
+  }
+
+  function animateTodaySwipe(direction) {
+    const target = document.getElementById("today-card");
+    if (!target) return;
+    target.classList.remove("is-swipe-next", "is-swipe-prev");
+    void target.offsetWidth;
+    target.classList.add(direction > 0 ? "is-swipe-next" : "is-swipe-prev");
+    window.setTimeout(() => {
+      target.classList.remove("is-swipe-next", "is-swipe-prev");
+    }, 260);
+  }
+
+  function moveTodayBySwipe(direction) {
+    const nextDay = currentDay + direction;
+    if (nextDay < 0 || nextDay >= days.length) return;
+    setCurrentDay(nextDay);
+    animateTodaySwipe(direction);
+  }
+
+  function installTodaySwipe() {
+    if (todaySwipeInstalled) return;
+    todaySwipeInstalled = true;
+    let swipeStart = null;
+
+    document.addEventListener("touchstart", (event) => {
+      const card = event.target.closest?.("#today-card");
+      if (!card || document.body.dataset.activeTab !== "today" || isInteractiveTarget(event.target)) {
+        swipeStart = null;
+        return;
+      }
+      const touch = event.touches[0];
+      swipeStart = {
+        x: touch.clientX,
+        y: touch.clientY,
+        time: Date.now()
+      };
+    }, { passive: true });
+
+    document.addEventListener("touchend", (event) => {
+      if (!swipeStart) return;
+      const touch = event.changedTouches[0];
+      const deltaX = touch.clientX - swipeStart.x;
+      const deltaY = touch.clientY - swipeStart.y;
+      const elapsed = Date.now() - swipeStart.time;
+      swipeStart = null;
+
+      if (
+        elapsed > SWIPE_MAX_TIME ||
+        Math.abs(deltaX) < SWIPE_MIN_DISTANCE ||
+        Math.abs(deltaX) < Math.abs(deltaY) * 1.4
+      ) {
+        return;
+      }
+
+      moveTodayBySwipe(deltaX < 0 ? 1 : -1);
+    }, { passive: true });
+
+    document.addEventListener("touchcancel", () => {
+      swipeStart = null;
+    }, { passive: true });
   }
 
   function buildBottomNav() {

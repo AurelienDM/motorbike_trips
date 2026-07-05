@@ -1,20 +1,20 @@
-const CACHE_NAME = "ducati-alps-roadbook-v16";
+const CACHE_NAME = "ducati-alps-roadbook-v17";
 const OFFLINE_URL = "./index.html";
 
 const PRECACHE_URLS = [
   "./",
   "./index.html",
   "./app.css",
-  "./app.css?v=16",
+  "./app.css?v=17",
   "./app.js",
-  "./app.js?v=16",
+  "./app.js?v=17",
   "./manifest.webmanifest",
   "./icons/icon-180.png",
-  "./icons/icon-180.png?v=16",
+  "./icons/icon-180.png?v=17",
   "./icons/icon-192.png",
-  "./icons/icon-192.png?v=16",
+  "./icons/icon-192.png?v=17",
   "./icons/icon-512.png",
-  "./icons/icon-512.png?v=16",
+  "./icons/icon-512.png?v=17",
   "./data/README_GPX_v3_iPhone.txt",
   "./data/road_book_links_v3.csv",
   "./gpx/day_01_20_Jul_The_Hague_Kautenbach_Luxembourg_Ardennes.gpx",
