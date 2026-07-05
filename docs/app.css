@@ -317,12 +317,30 @@ body.app-shell-ready a[href="#iphone"] {
   display: none !important;
 }
 
+body.app-shell-ready .static-overview,
+body.app-shell-ready .app-day-cards,
+body.app-shell-ready .app-gpx-notes,
+body.app-shell-ready .footer,
+body.app-shell-ready .app-view {
+  display: none;
+}
+
+body[data-active-tab="today"] #today,
+body[data-active-tab="itinerary"] #itinerary,
+body[data-active-tab="fuel"] #fuel,
+body[data-active-tab="calendar"] #calendar,
+body[data-active-tab="settings"] #settings,
+body[data-show-day-cards="true"] .app-day-cards,
+body[data-show-gpx="true"] .app-gpx-notes {
+  display: block;
+}
+
 .wrap {
   padding-top: 12px;
 }
 
 .hero {
-  padding: 10px 4px 6px;
+  padding: 10px 4px 8px;
 }
 
 .hero h1 {
@@ -335,6 +353,34 @@ body.app-shell-ready a[href="#iphone"] {
 .hero p {
   color: var(--muted);
   max-width: 620px;
+}
+
+body.app-shell-ready .hero {
+  align-items: start;
+  border-bottom: 1px solid var(--line);
+  display: grid;
+  gap: 3px;
+  margin-bottom: 12px;
+  padding: 8px 4px 12px;
+}
+
+body.app-shell-ready .hero h1 {
+  font-size: 22px;
+  line-height: 1.05;
+  margin: 0;
+}
+
+body.app-shell-ready .hero p {
+  display: none;
+  font-size: 13px;
+  line-height: 1.25;
+  margin: 0;
+  max-width: none;
+  text-align: left;
+}
+
+body.app-shell-ready .hero .pillrow {
+  display: none;
 }
 
 .pill,
@@ -684,6 +730,101 @@ main .panel p[style*="color"] {
   color: var(--muted);
 }
 
+.today-map {
+  height: clamp(230px, 56vw, 460px);
+}
+
+.today-grid {
+  grid-template-columns: 1fr;
+}
+
+.itinerary-summary {
+  order: -2;
+}
+
+.itinerary-map {
+  order: -1;
+  height: clamp(230px, 52vw, 430px);
+}
+
+.itinerary-list,
+.calendar-list {
+  display: grid;
+  gap: 10px;
+}
+
+.itinerary-item,
+.calendar-row {
+  align-items: center;
+  background: var(--surface-solid);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  display: grid;
+  gap: 10px;
+  padding: 12px;
+}
+
+.itinerary-item.is-current,
+.calendar-row.is-current {
+  border-color: rgba(22, 116, 71, 0.5);
+  box-shadow: inset 3px 0 0 var(--accent);
+}
+
+html[data-theme="night"] .itinerary-item.is-current,
+html[data-theme="night"] .calendar-row.is-current {
+  border-color: rgba(125, 216, 125, 0.48);
+}
+
+.itinerary-main,
+.calendar-main {
+  min-width: 0;
+}
+
+.itinerary-date,
+.calendar-date span {
+  color: var(--accent);
+  display: block;
+  font-size: 12px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.itinerary-main h3,
+.calendar-main h3 {
+  color: var(--text);
+  font-size: 17px;
+  line-height: 1.15;
+  margin: 2px 0 0;
+}
+
+.itinerary-main p,
+.calendar-main p {
+  color: var(--muted);
+  margin: 5px 0 0;
+}
+
+.itinerary-actions,
+.calendar-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.calendar-row {
+  grid-template-columns: minmax(78px, 0.32fr) minmax(0, 1fr);
+}
+
+.calendar-date strong {
+  color: var(--text);
+  display: block;
+  font-size: 15px;
+  line-height: 1.1;
+}
+
+.calendar-actions {
+  grid-column: 1 / -1;
+}
+
 .fuel-hero {
   background:
     linear-gradient(135deg, rgba(22, 116, 71, 0.16), rgba(45, 108, 223, 0.12)),
@@ -756,15 +897,15 @@ main .panel p[style*="color"] {
   bottom: max(12px, env(safe-area-inset-bottom));
   z-index: 40;
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 6px;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 4px;
   width: calc(100vw - 24px);
-  max-width: 520px;
+  max-width: 620px;
   margin: 0 auto;
-  padding: 8px;
+  padding: 7px;
   transform: translateX(-50%);
   border: 1px solid var(--glass-line);
-  border-radius: 28px;
+  border-radius: 24px;
   background:
     linear-gradient(135deg, rgba(255, 255, 255, 0.42), rgba(255, 255, 255, 0.14)),
     var(--glass);
@@ -786,15 +927,15 @@ html[data-theme="night"] .bottom-glass-nav {
 
 .bottom-glass-nav a {
   align-items: center;
-  border-radius: 22px;
+  border-radius: 18px;
   color: var(--muted);
   display: grid;
   gap: 3px;
   justify-items: center;
-  min-height: 58px;
-  padding: 7px 4px;
+  min-height: 54px;
+  padding: 7px 3px;
   text-decoration: none;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 900;
 }
 
@@ -914,7 +1055,7 @@ html[data-theme="night"] .fuel-hero {
 
 .primary-actions {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(118px, 1fr));
   gap: 8px;
 }
 
@@ -925,6 +1066,12 @@ html[data-theme="night"] .fuel-hero {
 .action.camp-action {
   background: var(--surface-solid);
   border-color: rgba(245, 182, 66, 0.62);
+  color: var(--text);
+}
+
+.action.fuel-action {
+  background: var(--surface-solid);
+  border-color: rgba(45, 108, 223, 0.32);
   color: var(--text);
 }
 
@@ -1123,6 +1270,7 @@ html[data-theme="night"] .mini-command {
 
 .station-actions a,
 .mini-link {
+  appearance: none;
   border: 1px solid var(--line);
   border-radius: 7px;
   background: var(--surface-soft);
@@ -1134,6 +1282,8 @@ html[data-theme="night"] .mini-command {
   text-decoration: none;
   font-size: 12px;
   font-weight: 900;
+  font-family: inherit;
+  cursor: pointer;
 }
 
 .fuel-floating-sheet {
@@ -1210,6 +1360,19 @@ html[data-theme="night"] .fuel-floating-sheet {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
+  .itinerary-item {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .calendar-row {
+    grid-template-columns: minmax(96px, 0.22fr) minmax(0, 1fr) auto;
+  }
+
+  .calendar-actions {
+    grid-column: auto;
+    justify-content: flex-end;
+  }
+
   .pager {
     grid-template-columns: repeat(3, 1fr);
   }
@@ -1230,6 +1393,39 @@ html[data-theme="night"] .fuel-floating-sheet {
   }
 }
 
+@media (max-width: 600px) {
+  .wrap {
+    margin: 0;
+    width: min(390px, 100%);
+  }
+
+  .app-panel-head h2,
+  .app-card h3,
+  .fuel-hero strong {
+    font-size: 28px;
+  }
+
+  .bottom-glass-nav {
+    left: 10px;
+    max-width: 370px;
+    right: auto;
+    transform: none;
+  }
+
+  .bottom-glass-nav a {
+    font-size: 10px;
+  }
+
+  .primary-actions {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .primary-actions .action {
+    gap: 5px;
+    padding: 8px 6px;
+  }
+}
+
 @media (max-width: 480px) {
   .wrap {
     padding: 12px 10px;
@@ -1242,6 +1438,17 @@ html[data-theme="night"] .fuel-floating-sheet {
   .hero h1 {
     font-size: 34px;
     line-height: 1.04;
+  }
+
+  body.app-shell-ready .hero {
+    align-items: start;
+    display: grid;
+    gap: 4px;
+  }
+
+  body.app-shell-ready .hero p {
+    max-width: none;
+    text-align: left;
   }
 
   .app-panel-head h2,
@@ -1308,11 +1515,31 @@ html[data-theme="night"] .fuel-floating-sheet {
 
   .bottom-glass-nav {
     width: calc(100vw - 20px);
-    padding: 7px;
+    padding: 6px;
+  }
+
+  .bottom-glass-nav a {
+    border-radius: 16px;
+    font-size: 10px;
+    min-height: 50px;
+  }
+
+  .bottom-glass-nav svg {
+    height: 19px;
+    width: 19px;
   }
 
   .real-map {
     min-height: 208px;
+  }
+
+  .itinerary-item,
+  .calendar-row {
+    padding: 10px;
+  }
+
+  .calendar-row {
+    grid-template-columns: 1fr;
   }
 
   .station-list li {

@@ -45,6 +45,14 @@
     return stats.find((stat) => stat.label.toLowerCase() === label.toLowerCase())?.value || "";
   }
 
+  function dayDate(day) {
+    return clean(day.meta.split("·")[0] || day.meta);
+  }
+
+  function dayRegion(day) {
+    return clean(day.meta.split("·").slice(1).join("·")) || "Route";
+  }
+
   function parseKm(value) {
     const match = clean(value).match(/(\d+)/);
     return match ? Number(match[1]) : 0;
@@ -272,8 +280,10 @@
     if (!days.length) return;
     currentDay = Math.max(0, Math.min(days.length - 1, index));
     window.localStorage.setItem(DAY_KEY, String(currentDay));
-    renderTrip();
+    renderToday();
+    renderItinerary();
     renderFuel();
+    renderCalendar();
     updateDaySelects();
     if (options.scrollCard) {
       document.getElementById(days[currentDay].id)?.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -322,7 +332,10 @@
       main.push(actionLink("action primary", day.google, "Maps", "map"));
     }
     if (includeCamping && day.camp) {
-      main.push(actionLink("action camp-action", day.camp, "Camping", "camp"));
+      main.push(actionLink("action camp-action", day.camp, "Camp", "camp"));
+    }
+    if (options.includeFuel) {
+      main.push(actionLink("action fuel-action", fuelMapsLink(), "Fuel", "fuel"));
     }
     if (day.osm) {
       extras.push(actionLink("action", day.osm, "OpenStreetMap", "map"));
@@ -342,7 +355,7 @@
       `<div class="primary-actions">${main.join("")}</div>`,
       extras.length ? [
         '<details class="more-actions">',
-        `<summary>${icon("more")}<span>More</span></summary>`,
+        `<summary>${icon("more")}<span>Options</span></summary>`,
         `<div class="action-grid compact">${extras.join("")}</div>`,
         '</details>'
       ].join("") : "",
@@ -423,11 +436,13 @@
     document.body.classList.add("app-shell-ready");
     removeInstallSurface();
     tuneStaticCopy();
-    buildTripPanel();
+    markStaticSections();
+    buildTodayPanel();
+    buildItineraryPanel();
     buildFuelPanel();
+    buildCalendarPanel();
     buildSettingsPanel();
     buildBottomNav();
-    buildFuelFloatingSheet();
     installCardMaps();
     wireAppEvents();
     setTheme(themeMode);
@@ -447,37 +462,59 @@
     const heroPills = document.querySelector(".hero .pillrow");
     const dayHeading = document.querySelector("#days > h2");
     if (heroTitle) heroTitle.textContent = "Alps Roadbook";
-    if (heroText) heroText.textContent = "Ducati route, fuel rhythm, camps and GPX. Pick a day and ride light.";
+    if (heroText) heroText.textContent = "Ducati route, fuel rhythm, camps and GPX.";
     if (heroPills) {
       heroPills.innerHTML = [
-        '<a class="pill primary" href="#trip">Trip</a>',
+        '<a class="pill primary" href="#today">Today</a>',
+        '<a class="pill" href="#itinerary">Itinerary</a>',
         '<a class="pill" href="#fuel">Fuel</a>',
-        '<a class="pill" href="#days">Days</a>'
+        '<a class="pill" href="#calendar">Dates</a>'
       ].join("");
     }
-    if (dayHeading) dayHeading.textContent = "All days";
+    if (dayHeading) dayHeading.textContent = "Day cards";
   }
 
-  function buildTripPanel() {
+  function markStaticSections() {
+    document.querySelector("main > .panel.grid")?.classList.add("static-overview");
+    document.getElementById("days")?.classList.add("app-day-cards");
+    document.getElementById("gpx")?.classList.add("app-gpx-notes");
+  }
+
+  function buildTodayPanel() {
     const section = document.createElement("section");
-    section.id = "trip";
-    section.className = "panel app-panel trip-panel";
+    section.id = "today";
+    section.className = "panel app-panel app-view today-panel";
     section.innerHTML = [
       '<div class="app-panel-head">',
-      '<div><span class="eyebrow">Trip</span><h2>Today on the bike</h2></div>',
+      '<div><span class="eyebrow">Main</span><h2>Today on the bike</h2></div>',
       `<select class="app-select" data-day-select aria-label="Choose day">${dayOptions()}</select>`,
       '</div>',
-      '<div id="trip-card" class="app-card"></div>'
+      '<div id="today-card" class="app-card"></div>'
     ].join("");
 
     const overview = document.querySelector("main > .panel.grid");
     (overview || document.getElementById("days")).before(section);
   }
 
+  function buildItineraryPanel() {
+    const section = document.createElement("section");
+    section.id = "itinerary";
+    section.className = "panel app-panel app-view itinerary-panel";
+    section.innerHTML = [
+      '<div class="app-panel-head">',
+      '<div><span class="eyebrow">Route</span><h2>Full itinerary</h2></div>',
+      `<select class="app-select" data-day-select aria-label="Choose itinerary day">${dayOptions()}</select>`,
+      '</div>',
+      '<div id="itinerary-card" class="app-card"></div>'
+    ].join("");
+
+    document.querySelector(".static-overview")?.before(section);
+  }
+
   function buildFuelPanel() {
     const section = document.createElement("section");
     section.id = "fuel";
-    section.className = "panel app-panel fuel-panel";
+    section.className = "panel app-panel app-view fuel-panel";
     section.innerHTML = [
       '<div class="app-panel-head">',
       '<div><span class="eyebrow">Fuel</span><h2>180-200 km rhythm</h2></div>',
@@ -489,10 +526,25 @@
     document.getElementById("days").before(section);
   }
 
+  function buildCalendarPanel() {
+    const section = document.createElement("section");
+    section.id = "calendar";
+    section.className = "panel app-panel app-view calendar-panel";
+    section.innerHTML = [
+      '<div class="app-panel-head">',
+      '<div><span class="eyebrow">Dates</span><h2>Calendar</h2></div>',
+      `<select class="app-select" data-day-select aria-label="Choose calendar day">${dayOptions()}</select>`,
+      '</div>',
+      '<div id="calendar-card" class="app-card"></div>'
+    ].join("");
+
+    document.getElementById("days").before(section);
+  }
+
   function buildSettingsPanel() {
     const section = document.createElement("section");
     section.id = "settings";
-    section.className = "panel app-panel settings-panel";
+    section.className = "panel app-panel app-view settings-panel";
     section.innerHTML = [
       '<div class="app-panel-head">',
       '<div><span class="eyebrow">Settings</span><h2>Ride setup</h2></div>',
@@ -525,18 +577,18 @@
     document.getElementById("gpx").before(section);
   }
 
-  function renderTrip() {
-    const target = document.getElementById("trip-card");
+  function renderToday() {
+    const target = document.getElementById("today-card");
     if (!target || !days.length) return;
     const day = days[currentDay];
     target.innerHTML = [
       `<div class="app-day-kicker">${htmlEscape(day.label)} / ${htmlEscape(day.meta)}</div>`,
       `<h3>${htmlEscape(day.title)}</h3>`,
-      realMapMarkup(day),
       `<div class="metric-row">${chipMarkup(day)}</div>`,
+      realMapMarkup(day, { className: "today-map" }),
+      actionPanel(day, { includeFuel: true, includeDayCard: true }),
       `<p class="lead">${htmlEscape(day.ridePlan || day.note || "Keep the day simple and ride within the plan.")}</p>`,
-      actionPanel(day),
-      '<div class="mini-grid">',
+      '<div class="mini-grid today-grid">',
       `<div class="mini-block"><span>Fuel</span><p>${htmlEscape(day.fuel || "Top up before 180-200 km.")}</p></div>`,
       `<div class="mini-block"><span>Break</span><p>${htmlEscape(day.food || "Use the listed quiet stop.")}</p></div>`,
       `<div class="mini-block"><span>Night</span><p>${htmlEscape(day.night || "See day card.")}</p></div>`,
@@ -545,6 +597,42 @@
       `<button class="btn" type="button" data-prev-day${currentDay === 0 ? " disabled" : ""}>Previous</button>`,
       '<button class="btn blue" type="button" data-open-day>Open Day Card</button>',
       `<button class="btn" type="button" data-next-day${currentDay === days.length - 1 ? " disabled" : ""}>Next</button>`,
+      '</div>'
+    ].join("");
+    attachMapTileHandlers(target);
+  }
+
+  function renderItinerary() {
+    const target = document.getElementById("itinerary-card");
+    if (!target || !days.length) return;
+    const totalKm = days.reduce((sum, day) => sum + day.distanceKm, 0);
+    const fullCoords = days.flatMap((day) => day.coords);
+    const fullTrip = {
+      coords: fullCoords,
+      osm: openStreetMapRoute(fullCoords)
+    };
+    target.innerHTML = [
+      '<div class="metric-row itinerary-summary">',
+      `<div class="metric"><span>Days</span><b>${days.length}</b></div>`,
+      `<div class="metric"><span>Planned km</span><b>${totalKm} km</b></div>`,
+      '<div class="metric"><span>Fuel rule</span><b>180-200 km</b></div>',
+      '</div>',
+      realMapMarkup(fullTrip, { className: "itinerary-map" }),
+      '<div class="itinerary-list">',
+      days.map((day, index) => [
+        `<article class="itinerary-item${index === currentDay ? " is-current" : ""}">`,
+        '<div class="itinerary-main">',
+        `<span class="itinerary-date">${htmlEscape(dayDate(day))}</span>`,
+        `<h3>${htmlEscape(day.shortLabel)}. ${htmlEscape(day.title)}</h3>`,
+        `<p>${htmlEscape(dayRegion(day))} / ${htmlEscape(day.distance || "-")} / ${htmlEscape(day.rideTime || "-")}</p>`,
+        '</div>',
+        '<div class="itinerary-actions">',
+        `<button class="mini-link button-link" type="button" data-select-day="${index}" data-go="today">Today</button>`,
+        `<a class="mini-link" href="#${htmlEscape(day.id)}" data-select-day="${index}">Card</a>`,
+        day.google ? `<a class="mini-link" href="${htmlEscape(day.google)}" target="_blank" rel="noopener">Maps</a>` : "",
+        '</div>',
+        '</article>'
+      ].join("")).join(""),
       '</div>'
     ].join("");
     attachMapTileHandlers(target);
@@ -572,6 +660,31 @@
       actionPanel(day, { compact: true, includeCamping: false })
     ].join("");
     renderFuelShortcut();
+  }
+
+  function renderCalendar() {
+    const target = document.getElementById("calendar-card");
+    if (!target || !days.length) return;
+    target.innerHTML = [
+      '<div class="calendar-list">',
+      days.map((day, index) => [
+        `<article class="calendar-row${index === currentDay ? " is-current" : ""}">`,
+        '<div class="calendar-date">',
+        `<strong>${htmlEscape(dayDate(day))}</strong>`,
+        `<span>${htmlEscape(day.label)}</span>`,
+        '</div>',
+        '<div class="calendar-main">',
+        `<h3>${htmlEscape(day.title)}</h3>`,
+        `<p>${htmlEscape(day.night || dayRegion(day))}</p>`,
+        '</div>',
+        '<div class="calendar-actions">',
+        `<button class="mini-link button-link" type="button" data-select-day="${index}" data-go="today">Today</button>`,
+        `<a class="mini-link" href="#${htmlEscape(day.id)}" data-select-day="${index}">Card</a>`,
+        '</div>',
+        '</article>'
+      ].join("")).join(""),
+      '</div>'
+    ].join("");
   }
 
   function fuelMapsLink() {
@@ -604,9 +717,11 @@
     nav.className = "bottom-glass-nav";
     nav.setAttribute("aria-label", "Main app navigation");
     nav.innerHTML = [
-      `<a href="#trip" data-tab="trip">${icon("trip")}<span>Trip</span></a>`,
+      `<a href="#today" data-tab="today">${icon("target")}<span>Today</span></a>`,
+      `<a href="#itinerary" data-tab="itinerary">${icon("route")}<span>Route</span></a>`,
       `<a href="#fuel" data-tab="fuel">${icon("fuel")}<span>Fuel</span></a>`,
-      `<a href="#settings" data-tab="settings">${icon("settings")}<span>Settings</span></a>`
+      `<a href="#calendar" data-tab="calendar">${icon("calendar")}<span>Dates</span></a>`,
+      `<a href="#settings" data-tab="settings">${icon("settings")}<span>Setup</span></a>`
     ].join("");
     document.body.appendChild(nav);
   }
@@ -637,9 +752,25 @@
       const themeButton = event.target.closest("[data-theme-choice]");
       if (themeButton) setTheme(themeButton.getAttribute("data-theme-choice"));
 
+      const dayButton = event.target.closest("[data-select-day]");
+      if (dayButton) {
+        const index = Number(dayButton.getAttribute("data-select-day"));
+        if (Number.isInteger(index)) {
+          setCurrentDay(index);
+          if (dayButton.dataset.go === "today") {
+            event.preventDefault();
+            window.location.hash = "today";
+          }
+        }
+      }
+
       if (event.target.closest("[data-prev-day]")) setCurrentDay(currentDay - 1);
       if (event.target.closest("[data-next-day]")) setCurrentDay(currentDay + 1);
-      if (event.target.closest("[data-open-day]")) setCurrentDay(currentDay, { scrollCard: true });
+      if (event.target.closest("[data-open-day]")) {
+        event.preventDefault();
+        window.location.hash = days[currentDay].id;
+        updateActiveNav();
+      }
 
       if (event.target.closest("[data-keep-awake]") && typeof window.keepAwake === "function") {
         window.keepAwake();
@@ -660,11 +791,30 @@
 
   function updateActiveNav() {
     const hash = window.location.hash.replace("#", "");
-    const active = hash === "fuel" ? "fuel" : hash === "settings" ? "settings" : "trip";
+    const hashDayIndex = days.findIndex((day) => day.id === hash);
+    if (hashDayIndex >= 0 && hashDayIndex !== currentDay) {
+      setCurrentDay(hashDayIndex);
+    }
+    const active = hash === "fuel"
+      ? "fuel"
+      : hash === "settings" || hash === "gpx"
+        ? "settings"
+        : hash === "calendar"
+          ? "calendar"
+          : hash === "itinerary" || hash === "days" || hashDayIndex >= 0
+            ? "itinerary"
+            : "today";
     document.body.dataset.activeTab = active;
+    document.body.dataset.showDayCards = String(hash === "days" || hashDayIndex >= 0);
+    document.body.dataset.showGpx = String(hash === "gpx");
     document.querySelectorAll("[data-tab]").forEach((link) => {
       link.classList.toggle("is-active", link.dataset.tab === active);
     });
+    if (hashDayIndex >= 0) {
+      window.requestAnimationFrame(() => {
+        document.getElementById(hash)?.scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+    }
   }
 
   function organizeDayCardActions() {
