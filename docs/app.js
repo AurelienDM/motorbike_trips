@@ -9,6 +9,28 @@
   const SWIPE_MIN_DISTANCE = 70;
   const SWIPE_MAX_TIME = 900;
   const SIGHT_MATCHER = /★|view|sight|lac|lake|see|river|col\b|pass|gorge|valley|forest|glacier|waterfall|cascade|roselend|iseran|grimsel|furka|susten|jura|sal[eè]ve|morvan|ardenne|clervaux|beaufort|bourg|chapieux|bonneval|geneva|zurich|gruy[eè]res|sion|chamonix|colmar|munster|bastogne|spa|maastricht|titisee|schluchsee|settons|gileppe/i;
+  const ROUTE_METRICS = [
+    { km: 389, mins: 347, legs: [76, 59, 116, 39, 78, 20] },
+    { km: 513, mins: 490, legs: [64, 106, 91, 82, 140, 31] },
+    { km: 94, mins: 112, legs: [6, 23, 9, 29, 27] },
+    { km: 274, mins: 260, legs: [87, 57, 83, 46] },
+    { km: 137, mins: 170, legs: [18, 21, 10, 46, 41] },
+    { km: 447, mins: 380, legs: [163, 98, 92, 22, 53, 19] },
+    { km: 106, mins: 157, legs: [6, 4, 13, 1, 19, 8, 15, 41] },
+    { km: 75, mins: 93, legs: [7, 9, 12, 4, 15, 28] },
+    { km: 32, mins: 91, legs: [0, 14, 12, 6] },
+    { km: 61, mins: 103, legs: [6, 14, 19, 8, 15, 0] },
+    { km: 88, mins: 138, legs: [4, 19, 8, 0, 13, 14, 31] },
+    { km: 125, mins: 158, legs: [12, 15, 5, 17, 13, 15, 48] },
+    { km: 177, mins: 196, legs: [54, 10, 26, 8, 12, 21, 0, 46] },
+    { km: 109, mins: 177, legs: [20, 50, 19, 21] },
+    { km: 250, mins: 249, legs: [28, 100, 28, 37, 18, 24, 15] },
+    { km: 121, mins: 132, legs: [26, 6, 10, 22, 10, 18, 28] },
+    { km: 118, mins: 118, legs: [8, 6, 39, 31, 34] },
+    { km: 336, mins: 335, legs: [84, 71, 32, 22, 97, 20, 10] },
+    { km: 418, mins: 362, legs: [28, 123, 57, 62, 70, 78] },
+    { km: 302, mins: 272, legs: [40, 34, 88, 60, 80] }
+  ];
 
   function htmlEscape(value) {
     return clean(value)
@@ -89,16 +111,32 @@
   function openStreetMapRoute(coords) {
     if (!coords.length) return "https://www.openstreetmap.org/";
     const first = coords[0];
-    const last = coords[coords.length - 1];
     const center = coordsCenter(coords);
     if (coords.length < 2) {
       return `https://www.openstreetmap.org/?mlat=${first.lat}&mlon=${first.lon}#map=12/${first.lat}/${first.lon}`;
     }
+    const route = compactRouteCoords(coords).map((point) => (
+      `${point.lat.toFixed(6)}%2C${point.lon.toFixed(6)}`
+    )).join("%3B");
     return [
       "https://www.openstreetmap.org/directions",
-      `?engine=fossgis_osrm_car&route=${first.lat}%2C${first.lon}%3B${last.lat}%2C${last.lon}`,
+      `?engine=fossgis_osrm_car&route=${route}`,
       `#map=${chooseMapZoom(coords)}/${center.lat}/${center.lon}`
     ].join("");
+  }
+
+  function compactRouteCoords(coords, limit = 25) {
+    if (coords.length <= limit) return coords;
+    const result = [coords[0]];
+    const step = (coords.length - 2) / (limit - 2);
+    for (let i = 1; i < limit - 1; i += 1) {
+      result.push(coords[Math.round(i * step)]);
+    }
+    result.push(coords[coords.length - 1]);
+    return result.filter((point, index) => {
+      const previous = result[index - 1];
+      return !previous || previous.lat !== point.lat || previous.lon !== point.lon;
+    });
   }
 
   function clamp(value, min, max) {
@@ -153,6 +191,7 @@
   function realMapMarkup(day, options = {}) {
     if (!day.coords.length) return "";
     const className = clean(`real-map ${options.className || ""}`);
+    const loading = options.eager ? "eager" : "lazy";
     const zoom = chooseMapZoom(day.coords);
     const center = coordsCenter(day.coords);
     const centerPx = worldPixel(center, zoom);
@@ -179,16 +218,29 @@
     const tiles = [-1, 0, 1].map((dy) => [-1, 0, 1].map((dx) => {
       const x = (centerTile.x + dx + maxTile + 1) % (maxTile + 1);
       const y = clamp(centerTile.y + dy, 0, maxTile);
-      return `<img data-map-tile alt="" loading="lazy" src="https://tile.openstreetmap.org/${zoom}/${x}/${y}.png">`;
+      return `<img data-map-tile alt="" loading="${loading}" decoding="async" referrerpolicy="no-referrer" src="https://tile.openstreetmap.org/${zoom}/${x}/${y}.png">`;
     }).join("")).join("");
 
     return [
       `<div class="${htmlEscape(className)}" aria-label="Live OpenStreetMap route preview">`,
+      mapFallbackMarkup(),
       `<div class="tile-grid">${tiles}</div>`,
       `<svg class="route-overlay" viewBox="0 0 768 768" aria-hidden="true"><polyline points="${routePoints}"/>${markers}</svg>`,
       '<a class="map-open" target="_blank" rel="noopener" href="' + htmlEscape(day.osm) + '">Open map</a>',
       '<a class="map-attribution" target="_blank" rel="noopener" href="https://www.openstreetmap.org/copyright">© OpenStreetMap</a>',
       '</div>'
+    ].join("");
+  }
+
+  function mapFallbackMarkup() {
+    return [
+      '<svg class="map-fallback" viewBox="0 0 768 768" aria-hidden="true">',
+      '<rect width="768" height="768" fill="#e7efe9"/>',
+      '<path d="M0 184 C118 132 220 203 344 145 C478 82 580 134 768 83 V768 H0Z" fill="#d4e7d8"/>',
+      '<path d="M0 526 C112 476 205 541 322 492 C462 433 576 498 768 428 V768 H0Z" fill="#c3dccd"/>',
+      '<path d="M55 690 C168 590 284 626 384 527 C502 411 625 440 760 315" fill="none" stroke="#9ebbb1" stroke-width="32" stroke-linecap="round" opacity="0.45"/>',
+      '<path d="M88 164 H678 M50 295 H720 M38 427 H728 M95 560 H676 M190 82 V682 M347 43 V732 M516 75 V694" stroke="#ffffff" stroke-width="5" opacity="0.58"/>',
+      '</svg>'
     ].join("");
   }
 
@@ -199,6 +251,7 @@
     const google = card.querySelector(".btn.blue[href^='https://www.google.com/maps']")?.getAttribute("href") || "";
     const coords = parseGoogleRoute(google);
     const gpx = card.querySelector("a[download][href$='.gpx']")?.getAttribute("href") || "";
+    const routeMetric = ROUTE_METRICS[index] || null;
     return {
       index,
       id: card.id,
@@ -207,8 +260,11 @@
       title: clean(card.querySelector("h2")?.textContent),
       meta: clean(card.querySelector(".card-header div[style*='font-weight']")?.textContent),
       stats,
-      distance,
-      distanceKm: parseKm(distance),
+      plannedDistance: distance,
+      distance: routeMetric ? `${routeMetric.km} km` : distance,
+      distanceKm: routeMetric?.km || parseKm(distance),
+      routeDurationMins: routeMetric?.mins || 0,
+      legsKm: routeMetric?.legs || [],
       rideTime: statValue(stats, "Riding time"),
       road: statValue(stats, "Road"),
       google,
@@ -221,6 +277,7 @@
       night: sectionText(card, "Night"),
       note: sectionText(card, "Road book note"),
       ridePlan: sectionText(card, "Ride plan"),
+      stops,
       fuelStops: stops.filter((stop) => /fuel/i.test(`${stop.name} ${stop.type}`)),
       breakStops: stops.filter((stop) => /break|coffee|nature|picnic|lake|river/i.test(`${stop.name} ${stop.type}`)),
       campStops: stops.filter((stop) => /camp|night|home|friends/i.test(`${stop.name} ${stop.type}`)),
@@ -445,6 +502,7 @@
     removeInstallSurface();
     tuneStaticCopy();
     markStaticSections();
+    syncRouteMetricsToStaticCards();
     buildTodayPanel();
     buildItineraryPanel();
     buildFuelPanel();
@@ -487,6 +545,17 @@
     document.querySelector("main > .panel.grid")?.classList.add("static-overview");
     document.getElementById("days")?.classList.add("app-day-cards");
     document.getElementById("gpx")?.classList.add("app-gpx-notes");
+  }
+
+  function syncRouteMetricsToStaticCards() {
+    cards.forEach((card, index) => {
+      const metric = ROUTE_METRICS[index];
+      if (!metric) return;
+      const distanceStat = Array.from(card.querySelectorAll(".stat"))
+        .find((stat) => clean(stat.querySelector("span")?.textContent).toLowerCase() === "distance");
+      const value = distanceStat?.querySelector("b");
+      if (value) value.textContent = `${metric.km} km`;
+    });
   }
 
   function buildTodayPanel() {
@@ -649,6 +718,115 @@
     ].join("");
   }
 
+  function formatDuration(mins) {
+    if (!mins) return "";
+    const hours = Math.floor(mins / 60);
+    const minutes = mins % 60;
+    return `${hours}h${String(minutes).padStart(2, "0")}`;
+  }
+
+  function stopTypeText(stop) {
+    return clean((stop.type || "stop")
+      .replace(/^[^a-zA-Z0-9]+/, "")
+      .replace(/^(S|C)\s+/i, "")) || "stop";
+  }
+
+  function stopKind(stop, index, count) {
+    const text = `${stop.name} ${stop.type}`.toLowerCase();
+    if (index === 0) return "start";
+    if (index === count - 1) return /camp|night|home|friends/.test(text) ? "camp" : "arrive";
+    if (/fuel/.test(text)) return "fuel";
+    if (/break|coffee|nature|picnic|lake|river/.test(text)) return "break";
+    if (isSightStop(stop)) return "sight";
+    if (/camp/.test(text)) return "camp";
+    return "stop";
+  }
+
+  function stopKindLabel(kind) {
+    const labels = {
+      arrive: "Arrive",
+      break: "Break",
+      camp: "Camp",
+      fuel: "Fuel",
+      sight: "Sight",
+      start: "Start",
+      stop: "Stop"
+    };
+    return labels[kind] || labels.stop;
+  }
+
+  function stopKindIcon(kind) {
+    const icons = {
+      arrive: "target",
+      break: "coffee",
+      camp: "camp",
+      fuel: "fuel",
+      sight: "map",
+      start: "trip",
+      stop: "target"
+    };
+    return icons[kind] || icons.stop;
+  }
+
+  function stopDistanceIntoDay(day, stop) {
+    const index = day.stops.findIndex((item) => item.name === stop.name);
+    if (index <= 0 || !day.legsKm.length) return 0;
+    return day.legsKm.slice(0, index).reduce((sum, km) => sum + km, 0);
+  }
+
+  function roughItinerary(day) {
+    if (!day.stops.length || !day.legsKm.length) return [];
+    const count = day.stops.length;
+    const limit = Math.min(day.legsKm.length, count - 1);
+    const items = [];
+    for (let index = 0; index < limit; index += 1) {
+      const from = day.stops[index];
+      const to = day.stops[index + 1];
+      const km = day.legsKm[index] || 0;
+      if (!to || (km < 1 && clean(from?.name).toLowerCase() === clean(to.name).toLowerCase())) continue;
+      const kind = stopKind(to, index + 1, count);
+      items.push({
+        km: Math.max(1, km),
+        name: sightName(to),
+        type: stopTypeText(to),
+        kind
+      });
+    }
+    return items;
+  }
+
+  function todayRoughItineraryMarkup(day) {
+    const items = roughItinerary(day);
+    if (!items.length) return "";
+    return [
+      '<section class="today-itinerary" aria-label="Rough itinerary">',
+      '<div class="today-section-head"><span>Rough itinerary</span><strong>Ride rhythm</strong></div>',
+      '<div class="today-route-summary">',
+      `<span><strong>${htmlEscape(day.distance)}</strong><small>OSM route km</small></span>`,
+      day.routeDurationMins ? `<span><strong>${htmlEscape(formatDuration(day.routeDurationMins))}</strong><small>OSM estimate</small></span>` : "",
+      day.plannedDistance && day.plannedDistance !== day.distance ? `<span><strong>${htmlEscape(day.plannedDistance)}</strong><small>Old plan</small></span>` : "",
+      '</div>',
+      '<ol class="ride-segments">',
+      items.map((item) => [
+        `<li class="ride-segment ${htmlEscape(item.kind)}">`,
+        '<span class="ride-segment-leg">',
+        `<strong>Ride ${htmlEscape(String(item.km))} km</strong>`,
+        `<small>to ${htmlEscape(item.name)}</small>`,
+        '</span>',
+        '<span class="ride-segment-stop">',
+        `<span class="ride-segment-icon">${icon(stopKindIcon(item.kind))}</span>`,
+        '<span>',
+        `<b>${htmlEscape(stopKindLabel(item.kind))}</b>`,
+        `<small>${htmlEscape(item.type)}</small>`,
+        '</span>',
+        '</span>',
+        '</li>'
+      ].join("")).join(""),
+      '</ol>',
+      '</section>'
+    ].join("");
+  }
+
   function isSightStop(stop) {
     const text = `${stop.name} ${stop.type}`;
     return SIGHT_MATCHER.test(text) && !/fuel|start|home/i.test(text);
@@ -772,10 +950,12 @@
       const key = name.toLowerCase();
       if (!name || seen.has(key) || /fuel|start|home/i.test(`${name} ${stop.type}`)) return items;
       seen.add(key);
+      const distance = stopDistanceIntoDay(day, stop);
       items.push({
         name,
         description: sightDescription(stop, day),
         href: googleSearchLink(name),
+        meta: distance ? `${distance} km into ride` : "On route",
         theme: sightTheme(stop)
       });
       return items;
@@ -802,6 +982,7 @@
         '<span class="sight-copy">',
         `<strong>${htmlEscape(sight.name)}</strong>`,
         `<small>${htmlEscape(sight.description)}</small>`,
+        `<span class="sight-meta">${htmlEscape(sight.meta || "On route")}</span>`,
         `<span class="sight-open">${icon("map")}<span>Maps</span></span>`,
         '</span>',
         '</a>'
@@ -894,12 +1075,12 @@
     const day = days[currentDay];
     target.classList.add("today-card");
     target.innerHTML = [
-      '<div class="today-hero">',
-      realMapMarkup(day, { className: "today-map today-hero-map" }),
       '<div class="today-hero-copy">',
       `<div class="app-day-kicker">${htmlEscape(day.label)} / ${htmlEscape(day.meta)}</div>`,
       `<h3>${htmlEscape(day.title)}</h3>`,
       '</div>',
+      '<div class="today-hero">',
+      realMapMarkup(day, { className: "today-map today-hero-map", eager: true }),
       '</div>',
       `<div class="metric-row today-stats">${chipMarkup(day)}</div>`,
       '<div class="today-actions">',
@@ -913,6 +1094,7 @@
       }),
       day.camp ? actionLink("action camp-action today-main-action", day.camp, "Camp", "camp") : "",
       '</div>',
+      todayRoughItineraryMarkup(day),
       todaySightsMarkup(day),
       `<p class="today-note">${htmlEscape(day.ridePlan || day.note || "Keep the day simple and ride within the plan.")}</p>`,
       '<div class="today-activities">',
@@ -941,7 +1123,7 @@
       routeDayCard(day),
       '<div class="metric-row itinerary-summary">',
       `<div class="metric"><span>Days</span><b>${days.length}</b></div>`,
-      `<div class="metric"><span>Planned km</span><b>${totalKm} km</b></div>`,
+      `<div class="metric"><span>OSM km</span><b>${totalKm} km</b></div>`,
       '<div class="metric"><span>Fuel rule</span><b>180-200 km</b></div>',
       '</div>',
       realMapMarkup(fullTrip, { className: "itinerary-map" }),
