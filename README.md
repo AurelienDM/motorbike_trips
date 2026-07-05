@@ -15,7 +15,13 @@ Your app should become available at:
 
 ## iPhone install
 
-Open that URL in Safari, tap **Share**, then **Add to Home Screen**.
+First make sure GitHub Pages is enabled for **main** / **docs** and that this URL loads:
+
+`https://aureliendm.github.io/motorbike_trips/`
+
+Then open that HTTPS URL in **Safari on the iPhone**, tap **Share**, scroll the action list if needed, then tap **Add to Home Screen**.
+
+Do not install from the local preview URL such as `http://127.0.0.1:8765/`. On an iPhone, `127.0.0.1` points to the phone itself, and HTTP previews do not give the full offline PWA behavior.
 
 ## Files
 

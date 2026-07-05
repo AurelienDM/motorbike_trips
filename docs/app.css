@@ -250,6 +250,16 @@ h3,
   color: var(--muted);
 }
 
+.install-list {
+  display: grid;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.install-list p {
+  margin: 0;
+}
+
 @media (min-width: 760px) {
   .stats {
     grid-template-columns: repeat(6, minmax(0, 1fr));

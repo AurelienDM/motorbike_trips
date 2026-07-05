@@ -113,6 +113,27 @@
     panel.appendChild(actions);
   }
 
+  function addInstallTroubleshooting() {
+    const panel = document.getElementById("iphone");
+    if (!panel || panel.querySelector(".install-troubleshooting")) return;
+
+    const localPreview = ["localhost", "127.0.0.1", "::1"].includes(window.location.hostname);
+    const box = document.createElement("div");
+    box.className = localPreview ? "warning install-troubleshooting" : "safe install-troubleshooting";
+    box.innerHTML = [
+      `<strong>${localPreview ? "Local preview detected:" : "Install checklist:"}</strong>`,
+      '<div class="install-list">',
+      "<p>Use Safari on the iPhone, not Chrome, GitHub preview, Google Drive, or an in-app browser.</p>",
+      '<p>Open <span class="kbd">https://aureliendm.github.io/motorbike_trips/</span> directly in Safari.</p>',
+      "<p>If that URL shows 404, enable GitHub Pages: Settings -> Pages -> Deploy from a branch -> main -> /docs, then wait a few minutes.</p>",
+      "<p>Do not install this Mac preview URL. On an iPhone, 127.0.0.1 points to the phone itself, and HTTP previews do not give the full offline PWA behavior.</p>",
+      "<p>In Safari, tap Share, scroll the action list if needed, then tap Add to Home Screen.</p>",
+      "</div>"
+    ].join("");
+
+    panel.insertBefore(box, panel.children[1] || null);
+  }
+
   function listMarkup(items, fallback) {
     if (!items.length) return `<p class="ride-muted">${htmlEscape(fallback)}</p>`;
     return `<ul class="ride-list">${items.slice(0, 4).map((item) => (
@@ -211,5 +232,6 @@
   addNavLinks();
   addOsmAndButtons();
   addFullGpxButtons();
+  addInstallTroubleshooting();
   buildRideMode();
 }());
