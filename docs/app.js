@@ -226,7 +226,7 @@
       mapFallbackMarkup(),
       `<div class="tile-grid">${tiles}</div>`,
       `<svg class="route-overlay" viewBox="0 0 768 768" aria-hidden="true"><polyline points="${routePoints}"/>${markers}</svg>`,
-      '<a class="map-open" target="_blank" rel="noopener" href="' + htmlEscape(day.osm) + '">Open map</a>',
+      '<a class="map-open" target="_blank" rel="noopener" aria-label="Open this route in OpenStreetMap" href="' + htmlEscape(day.osm) + '">' + icon("map") + '<span>OSM</span></a>',
       '<a class="map-attribution" target="_blank" rel="noopener" href="https://www.openstreetmap.org/copyright">© OpenStreetMap</a>',
       '</div>'
     ].join("");
@@ -799,12 +799,15 @@
     const items = roughItinerary(day);
     if (!items.length) return "";
     return [
-      '<section class="today-itinerary" aria-label="Rough itinerary">',
-      '<div class="today-section-head"><span>Rough itinerary</span><strong>Ride rhythm</strong></div>',
+      '<details class="today-itinerary" open>',
+      '<summary>',
+      '<span><small>Rough itinerary</small><strong>Ride rhythm</strong></span>',
+      `<b>${htmlEscape(day.distance)}${day.routeDurationMins ? ` · ${htmlEscape(formatDuration(day.routeDurationMins))}` : ""}</b>`,
+      '</summary>',
       '<div class="today-route-summary">',
       `<span><strong>${htmlEscape(day.distance)}</strong><small>OSM route km</small></span>`,
       day.routeDurationMins ? `<span><strong>${htmlEscape(formatDuration(day.routeDurationMins))}</strong><small>OSM estimate</small></span>` : "",
-      day.plannedDistance && day.plannedDistance !== day.distance ? `<span><strong>${htmlEscape(day.plannedDistance)}</strong><small>Old plan</small></span>` : "",
+      `<span><strong>${htmlEscape(String(items.length))}</strong><small>Route legs</small></span>`,
       '</div>',
       '<ol class="ride-segments">',
       items.map((item) => [
@@ -823,7 +826,7 @@
         '</li>'
       ].join("")).join(""),
       '</ol>',
-      '</section>'
+      '</details>'
     ].join("");
   }
 
@@ -1078,11 +1081,8 @@
       '<div class="today-hero-copy">',
       `<div class="app-day-kicker">${htmlEscape(day.label)} / ${htmlEscape(day.meta)}</div>`,
       `<h3>${htmlEscape(day.title)}</h3>`,
+      `<p class="today-intro">${htmlEscape(day.ridePlan || day.note || "Keep the day simple and ride within the plan.")}</p>`,
       '</div>',
-      '<div class="today-hero">',
-      realMapMarkup(day, { className: "today-map today-hero-map", eager: true }),
-      '</div>',
-      `<div class="metric-row today-stats">${chipMarkup(day)}</div>`,
       '<div class="today-actions">',
       day.google ? actionLink("action primary today-main-action", day.google, "Maps", "map") : "",
       todayActivityTile({
@@ -1094,9 +1094,12 @@
       }),
       day.camp ? actionLink("action camp-action today-main-action", day.camp, "Camp", "camp") : "",
       '</div>',
+      '<div class="today-hero">',
+      realMapMarkup(day, { className: "today-map today-hero-map", eager: true }),
+      '</div>',
+      `<div class="metric-row today-stats">${chipMarkup(day)}</div>`,
       todayRoughItineraryMarkup(day),
       todaySightsMarkup(day),
-      `<p class="today-note">${htmlEscape(day.ridePlan || day.note || "Keep the day simple and ride within the plan.")}</p>`,
       '<div class="today-activities">',
       todayActivities(day),
       '</div>',

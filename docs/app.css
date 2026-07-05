@@ -745,14 +745,21 @@ main .panel p[style*="color"] {
 
 .today-hero {
   position: relative;
-  height: 320px;
+  height: 280px;
   min-height: 0;
   overflow: hidden;
-  border: 1px solid var(--line);
-  border-radius: 14px;
+  border: 1px solid rgba(44, 69, 55, 0.18);
+  border-radius: 16px;
   background: var(--surface-soft);
-  box-shadow: var(--shadow);
+  box-shadow: 0 10px 28px rgba(24, 39, 30, 0.1);
   isolation: isolate;
+}
+
+.today-hero .real-map,
+.today-hero-map.real-map {
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
 }
 
 .today-map,
@@ -765,10 +772,14 @@ main .panel p[style*="color"] {
 
 .today-hero-copy {
   position: static;
-  padding: 14px;
-  border: 1px solid var(--line);
-  border-radius: 12px;
-  background: var(--surface-solid);
+  display: grid;
+  gap: 9px;
+  padding: 15px;
+  border: 1px solid rgba(22, 116, 71, 0.18);
+  border-radius: 16px;
+  background:
+    linear-gradient(135deg, rgba(22, 116, 71, 0.08), rgba(45, 108, 223, 0.05)),
+    var(--surface-solid);
   color: var(--text);
   -webkit-backdrop-filter: blur(16px) saturate(1.25);
   backdrop-filter: blur(16px) saturate(1.25);
@@ -784,24 +795,33 @@ html[data-theme="night"] .today-hero-copy {
   line-height: 1;
 }
 
+.today-intro {
+  margin: 0;
+  max-width: 62ch;
+  color: var(--muted);
+  font-size: 16px;
+  font-weight: 760;
+  line-height: 1.38;
+}
+
 .today-stats {
   margin-top: 0;
 }
 
 .today-actions {
   display: grid;
-  grid-template-columns: 1.2fr 1fr 1fr;
+  grid-template-columns: 1.25fr 1fr 1fr;
   gap: 9px;
 }
 
 .today-actions > * {
-  min-height: 62px;
+  min-height: 58px;
 }
 
 .today-main-action,
 .today-actions .today-activity {
-  border-radius: 12px;
-  box-shadow: 0 12px 28px rgba(24, 39, 30, 0.1);
+  border-radius: 14px;
+  box-shadow: 0 10px 22px rgba(24, 39, 30, 0.1);
 }
 
 .today-actions .today-activity {
@@ -818,8 +838,28 @@ html[data-theme="night"] .today-hero-copy {
   font-weight: 900;
 }
 
+.today-actions .action svg,
+.today-actions .today-activity-icon svg {
+  height: 21px;
+  width: 21px;
+}
+
+.today-actions .action span,
+.today-actions .today-activity strong {
+  font-size: 15px;
+  line-height: 1.05;
+}
+
 .today-actions .today-activity small {
   display: none;
+}
+
+.today-actions .action:focus-visible,
+.today-actions .today-activity:focus-visible,
+.today-itinerary summary:focus-visible,
+.sight-card:focus-visible {
+  outline: 3px solid rgba(45, 108, 223, 0.38);
+  outline-offset: 3px;
 }
 
 .today-note {
@@ -830,14 +870,70 @@ html[data-theme="night"] .today-hero-copy {
 }
 
 .today-itinerary {
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--surface-solid);
+  box-shadow: 0 10px 24px rgba(24, 39, 30, 0.08);
   display: grid;
-  gap: 10px;
+  gap: 0;
+}
+
+.today-itinerary summary {
+  align-items: center;
+  cursor: pointer;
+  display: grid;
+  gap: 8px;
+  grid-template-columns: minmax(0, 1fr) auto;
+  list-style: none;
+  min-height: 64px;
+  padding: 12px;
+}
+
+.today-itinerary summary::-webkit-details-marker {
+  display: none;
+}
+
+.today-itinerary summary span,
+.today-itinerary summary small,
+.today-itinerary summary strong {
+  display: block;
+  min-width: 0;
+}
+
+.today-itinerary summary small {
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.today-itinerary summary strong {
+  color: var(--text);
+  font-size: 20px;
+  line-height: 1.05;
+}
+
+.today-itinerary summary b {
+  border: 1px solid rgba(22, 116, 71, 0.18);
+  border-radius: 999px;
+  background: var(--surface-soft);
+  color: var(--text);
+  font-size: 12px;
+  line-height: 1;
+  padding: 8px 9px;
+  white-space: nowrap;
+}
+
+.today-itinerary[open] summary {
+  border-bottom: 1px solid var(--line);
 }
 
 .today-route-summary {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 8px;
+  padding: 10px 10px 0;
 }
 
 .today-route-summary span {
@@ -845,7 +941,7 @@ html[data-theme="night"] .today-hero-copy {
   display: block;
   border: 1px solid var(--line);
   border-radius: 10px;
-  background: var(--surface-solid);
+  background: var(--surface-soft);
   padding: 9px;
 }
 
@@ -873,7 +969,7 @@ html[data-theme="night"] .today-hero-copy {
   gap: 8px;
   list-style: none;
   margin: 0;
-  padding: 0;
+  padding: 10px;
 }
 
 .ride-segment {
@@ -888,7 +984,7 @@ html[data-theme="night"] .today-hero-copy {
 .ride-segment-stop {
   min-width: 0;
   border: 1px solid var(--line);
-  background: var(--surface-solid);
+  background: var(--surface-soft);
 }
 
 .ride-segment-leg {
@@ -1894,10 +1990,18 @@ html[data-theme="night"] .fuel-hero {
 }
 
 .map-open {
+  align-items: center;
+  display: inline-flex;
+  gap: 6px;
   top: 10px;
   right: 10px;
-  border-radius: 8px;
-  padding: 8px 10px;
+  border-radius: 999px;
+  padding: 8px 11px;
+}
+
+.map-open svg {
+  height: 17px;
+  width: 17px;
 }
 
 .map-attribution {
@@ -2302,7 +2406,7 @@ html[data-theme="night"] .fuel-floating-sheet {
   }
 
   .today-hero {
-    height: 300px;
+    height: 245px;
   }
 
   .today-map,
@@ -2315,7 +2419,11 @@ html[data-theme="night"] .fuel-floating-sheet {
   }
 
   .today-hero-copy h3 {
-    font-size: 28px;
+    font-size: 26px;
+  }
+
+  .today-intro {
+    font-size: 15px;
   }
 
   .today-stats {
@@ -2482,7 +2590,7 @@ html[data-theme="night"] .fuel-floating-sheet {
   }
 
   .today-hero {
-    height: 285px;
+    height: 230px;
   }
 
   .today-map,
