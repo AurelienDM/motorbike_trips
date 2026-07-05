@@ -5,6 +5,16 @@
   const cards = Array.from(document.querySelectorAll(".card[id^='day']"));
   const THEME_KEY = "roadbookThemeMode";
   const DAY_KEY = "roadbookActiveDay";
+  const FUEL_SEARCH_RADIUS_METERS = 8000;
+  const OVERPASS_ENDPOINT = "https://overpass-api.de/api/interpreter";
+  const TILE_SIZE = 256;
+
+  const nearbyFuel = {
+    status: "idle",
+    position: null,
+    items: [],
+    message: ""
+  };
 
   function htmlEscape(value) {
     return clean(value)
@@ -49,10 +59,142 @@
     return match ? Number(match[1]) : 0;
   }
 
+  function parseCoord(value) {
+    const match = clean(value).match(/(-?\d+(?:\.\d+)?)\s*,\s*(-?\d+(?:\.\d+)?)/);
+    if (!match) return null;
+    return { lat: Number(match[1]), lon: Number(match[2]) };
+  }
+
+  function parseGoogleRoute(href) {
+    if (!href) return [];
+    try {
+      const url = new URL(href);
+      const points = [];
+      const origin = parseCoord(url.searchParams.get("origin"));
+      const destination = parseCoord(url.searchParams.get("destination"));
+      if (origin) points.push(origin);
+      clean(url.searchParams.get("waypoints")).split("|").forEach((waypoint) => {
+        const point = parseCoord(waypoint);
+        if (point) points.push(point);
+      });
+      if (destination) points.push(destination);
+      return points;
+    } catch (error) {
+      return [];
+    }
+  }
+
+  function openStreetMapRoute(coords) {
+    if (!coords.length) return "https://www.openstreetmap.org/";
+    const first = coords[0];
+    const last = coords[coords.length - 1];
+    const center = coordsCenter(coords);
+    if (coords.length < 2) {
+      return `https://www.openstreetmap.org/?mlat=${first.lat}&mlon=${first.lon}#map=12/${first.lat}/${first.lon}`;
+    }
+    return [
+      "https://www.openstreetmap.org/directions",
+      `?engine=fossgis_osrm_car&route=${first.lat}%2C${first.lon}%3B${last.lat}%2C${last.lon}`,
+      `#map=${chooseMapZoom(coords)}/${center.lat}/${center.lon}`
+    ].join("");
+  }
+
+  function clamp(value, min, max) {
+    return Math.max(min, Math.min(max, value));
+  }
+
+  function coordsCenter(coords) {
+    if (!coords.length) return { lat: 47.5, lon: 7.2 };
+    const bounds = coords.reduce((box, point) => ({
+      minLat: Math.min(box.minLat, point.lat),
+      maxLat: Math.max(box.maxLat, point.lat),
+      minLon: Math.min(box.minLon, point.lon),
+      maxLon: Math.max(box.maxLon, point.lon)
+    }), {
+      minLat: coords[0].lat,
+      maxLat: coords[0].lat,
+      minLon: coords[0].lon,
+      maxLon: coords[0].lon
+    });
+    return {
+      lat: (bounds.minLat + bounds.maxLat) / 2,
+      lon: (bounds.minLon + bounds.maxLon) / 2
+    };
+  }
+
+  function chooseMapZoom(coords) {
+    if (coords.length < 2) return 12;
+    const lats = coords.map((point) => point.lat);
+    const lons = coords.map((point) => point.lon);
+    const span = Math.max(
+      Math.max(...lats) - Math.min(...lats),
+      Math.max(...lons) - Math.min(...lons)
+    );
+    if (span > 7) return 6;
+    if (span > 3.5) return 7;
+    if (span > 1.8) return 8;
+    if (span > 0.9) return 9;
+    if (span > 0.45) return 10;
+    return 11;
+  }
+
+  function worldPixel(point, zoom) {
+    const scale = TILE_SIZE * (2 ** zoom);
+    const lat = clamp(point.lat, -85.0511, 85.0511);
+    const sinLat = Math.sin(lat * Math.PI / 180);
+    return {
+      x: (point.lon + 180) / 360 * scale,
+      y: (0.5 - Math.log((1 + sinLat) / (1 - sinLat)) / (4 * Math.PI)) * scale
+    };
+  }
+
+  function realMapMarkup(day) {
+    if (!day.coords.length) return "";
+    const zoom = chooseMapZoom(day.coords);
+    const center = coordsCenter(day.coords);
+    const centerPx = worldPixel(center, zoom);
+    const centerTile = {
+      x: Math.floor(centerPx.x / TILE_SIZE),
+      y: Math.floor(centerPx.y / TILE_SIZE)
+    };
+    const tileOrigin = {
+      x: (centerTile.x - 1) * TILE_SIZE,
+      y: (centerTile.y - 1) * TILE_SIZE
+    };
+    const maxTile = (2 ** zoom) - 1;
+    const routePoints = day.coords.map((point) => {
+      const px = worldPixel(point, zoom);
+      return `${(px.x - tileOrigin.x).toFixed(1)},${(px.y - tileOrigin.y).toFixed(1)}`;
+    }).join(" ");
+    const markers = day.coords.map((point, index) => {
+      const px = worldPixel(point, zoom);
+      const x = (px.x - tileOrigin.x).toFixed(1);
+      const y = (px.y - tileOrigin.y).toFixed(1);
+      const cls = index === 0 ? "start" : index === day.coords.length - 1 ? "end" : "waypoint";
+      return `<circle class="map-marker ${cls}" cx="${x}" cy="${y}" r="${cls === "waypoint" ? 4.5 : 7}"/>`;
+    }).join("");
+    const tiles = [-1, 0, 1].map((dy) => [-1, 0, 1].map((dx) => {
+      const x = (centerTile.x + dx + maxTile + 1) % (maxTile + 1);
+      const y = clamp(centerTile.y + dy, 0, maxTile);
+      return `<img data-map-tile alt="" loading="lazy" src="https://tile.openstreetmap.org/${zoom}/${x}/${y}.png">`;
+    }).join("")).join("");
+
+    return [
+      '<div class="real-map" aria-label="Live OpenStreetMap route preview">',
+      `<div class="tile-grid">${tiles}</div>`,
+      `<svg class="route-overlay" viewBox="0 0 768 768" aria-hidden="true"><polyline points="${routePoints}"/>${markers}</svg>`,
+      '<a class="map-open" target="_blank" rel="noopener" href="' + htmlEscape(day.osm) + '">Open map</a>',
+      '<a class="map-attribution" target="_blank" rel="noopener" href="https://www.openstreetmap.org/copyright">© OpenStreetMap</a>',
+      '</div>'
+    ].join("");
+  }
+
   function dayData(card, index) {
     const stops = cardStops(card);
     const stats = cardStats(card);
     const distance = statValue(stats, "Distance");
+    const google = card.querySelector(".btn.blue[href^='https://www.google.com/maps']")?.getAttribute("href") || "";
+    const coords = parseGoogleRoute(google);
     const gpx = card.querySelector("a[download][href$='.gpx']")?.getAttribute("href") || "";
     return {
       index,
@@ -66,7 +208,9 @@
       distanceKm: parseKm(distance),
       rideTime: statValue(stats, "Riding time"),
       road: statValue(stats, "Road"),
-      google: card.querySelector(".btn.blue[href^='https://www.google.com/maps']")?.getAttribute("href") || "",
+      google,
+      coords,
+      osm: openStreetMapRoute(coords),
       camp: card.querySelector(".btn.green[href^='http']")?.getAttribute("href") || "",
       gpx,
       fuel: sectionText(card, "Fuel"),
@@ -96,6 +240,9 @@
       settings: '<path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z"/><path d="M19.4 15a1.8 1.8 0 0 0 .36 1.98l.04.04a2.1 2.1 0 0 1-2.97 2.97l-.04-.04a1.8 1.8 0 0 0-1.98-.36 1.8 1.8 0 0 0-1.1 1.66V21a2.1 2.1 0 0 1-4.2 0v-.06a1.8 1.8 0 0 0-1.1-1.66 1.8 1.8 0 0 0-1.98.36l-.04.04a2.1 2.1 0 0 1-2.97-2.97l.04-.04A1.8 1.8 0 0 0 4.6 15a1.8 1.8 0 0 0-1.66-1.1H3a2.1 2.1 0 0 1 0-4.2h.06A1.8 1.8 0 0 0 4.72 8.6a1.8 1.8 0 0 0-.36-1.98l-.04-.04a2.1 2.1 0 0 1 2.97-2.97l.04.04A1.8 1.8 0 0 0 9.3 4a1.8 1.8 0 0 0 1.1-1.66V2.3a2.1 2.1 0 0 1 4.2 0v.06A1.8 1.8 0 0 0 15.7 4a1.8 1.8 0 0 0 1.98-.36l.04-.04a2.1 2.1 0 0 1 2.97 2.97l-.04.04A1.8 1.8 0 0 0 19.28 8.6a1.8 1.8 0 0 0 1.66 1.1H21a2.1 2.1 0 0 1 0 4.2h-.06A1.8 1.8 0 0 0 19.4 15Z"/>',
       map: '<path d="m3 6 6-3 6 3 6-3v15l-6 3-6-3-6 3V6Z"/><path d="M9 3v15"/><path d="M15 6v15"/>',
       file: '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/>',
+      camp: '<path d="m3 20 9-16 9 16Z"/><path d="m12 4 2.8 16"/><path d="M9.2 20 12 14l2.8 6"/>',
+      target: '<path d="M12 21s7-5.2 7-11a7 7 0 1 0-14 0c0 5.8 7 11 7 11Z"/><path d="M12 10.5h.01"/>',
+      more: '<path d="M12 5h.01"/><path d="M12 12h.01"/><path d="M12 19h.01"/>',
       sun: '<path d="M12 18a6 6 0 1 0 0-12 6 6 0 0 0 0 12Z"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/>',
       moon: '<path d="M21 14.2A7.8 7.8 0 0 1 9.8 3a8 8 0 1 0 11.2 11.2Z"/>',
       awake: '<path d="M2 12s3.8-6 10-6 10 6 10 6-3.8 6-10 6S2 12 2 12Z"/><path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"/>'
@@ -167,25 +314,59 @@
     )).join("");
   }
 
-  function appActions(day, compact = false) {
-    const actions = [];
+  function actionLink(className, href, label, iconName, extra = "") {
+    return `<a class="${className}" href="${htmlEscape(href)}" target="_blank" rel="noopener" ${extra}>${icon(iconName)}<span>${htmlEscape(label)}</span></a>`;
+  }
+
+  function actionPanel(day, options = {}) {
+    const main = [];
+    const extras = [];
+    const compact = options.compact === true;
+    const includeCamping = options.includeCamping !== false;
     if (day.google) {
-      actions.push(`<a class="action primary" href="${htmlEscape(day.google)}" target="_blank" rel="noopener">${icon("map")}<span>Maps</span></a>`);
+      main.push(actionLink("action primary", day.google, "Maps", "map"));
+    }
+    if (includeCamping && day.camp) {
+      main.push(actionLink("action camp-action", day.camp, "Camping", "camp"));
+    }
+    if (day.osm) {
+      extras.push(actionLink("action", day.osm, "OpenStreetMap", "map"));
     }
     if (day.gpx) {
-      actions.push(`<a class="action" href="${htmlEscape(day.gpx)}" target="_blank" rel="noopener">${icon("trip")}<span>OsmAnd</span></a>`);
-      actions.push(`<a class="action" href="${htmlEscape(day.gpx)}" download>${icon("file")}<span>GPX</span></a>`);
+      extras.push(actionLink("action", day.gpx, "OsmAnd", "trip"));
+      extras.push(`<a class="action" href="${htmlEscape(day.gpx)}" download>${icon("file")}<span>GPX</span></a>`);
     }
-    if (!compact && day.camp) {
-      actions.push(`<a class="action" href="${htmlEscape(day.camp)}" target="_blank" rel="noopener"><span class="action-letter">C</span><span>Camp</span></a>`);
+    if (options.includeDayCard) {
+      extras.push(`<button class="action" type="button" data-open-day>${icon("more")}<span>Day Card</span></button>`);
     }
-    return actions.join("");
+    if (options.nextHref) {
+      extras.push(`<a class="action" href="${htmlEscape(options.nextHref)}">${icon("trip")}<span>Next Day</span></a>`);
+    }
+    return [
+      `<div class="action-stack${compact ? " compact" : ""}">`,
+      `<div class="primary-actions">${main.join("")}</div>`,
+      extras.length ? [
+        '<details class="more-actions">',
+        `<summary>${icon("more")}<span>More</span></summary>`,
+        `<div class="action-grid compact">${extras.join("")}</div>`,
+        '</details>'
+      ].join("") : "",
+      '</div>'
+    ].join("");
   }
 
   function fuelWindows(day) {
     if (!day.distanceKm) return "Use the 180-200 km rhythm.";
     const windows = Math.max(1, Math.ceil(day.distanceKm / 190));
     return `${windows} fuel window${windows > 1 ? "s" : ""} for ${day.distanceKm} km`;
+  }
+
+  function attachMapTileHandlers(scope) {
+    scope.querySelectorAll("[data-map-tile]").forEach((tile) => {
+      tile.addEventListener("error", () => {
+        tile.classList.add("is-missing");
+      });
+    });
   }
 
   function buildAppShell() {
@@ -198,6 +379,7 @@
     buildFuelPanel();
     buildSettingsPanel();
     buildBottomNav();
+    buildFuelFloatingSheet();
     wireAppEvents();
     setTheme(themeMode);
     updateActiveNav();
@@ -301,11 +483,10 @@
     target.innerHTML = [
       `<div class="app-day-kicker">${htmlEscape(day.label)} / ${htmlEscape(day.meta)}</div>`,
       `<h3>${htmlEscape(day.title)}</h3>`,
+      realMapMarkup(day),
       `<div class="metric-row">${chipMarkup(day)}</div>`,
       `<p class="lead">${htmlEscape(day.ridePlan || day.note || "Keep the day simple and ride within the plan.")}</p>`,
-      '<div class="action-grid">',
-      appActions(day),
-      '</div>',
+      actionPanel(day),
       '<div class="mini-grid">',
       `<div class="mini-block"><span>Fuel</span><p>${htmlEscape(day.fuel || "Top up before 180-200 km.")}</p></div>`,
       `<div class="mini-block"><span>Break</span><p>${htmlEscape(day.food || "Use the listed quiet stop.")}</p></div>`,
@@ -317,6 +498,7 @@
       `<button class="btn" type="button" data-next-day${currentDay === days.length - 1 ? " disabled" : ""}>Next</button>`,
       '</div>'
     ].join("");
+    attachMapTileHandlers(target);
   }
 
   function renderFuel() {
@@ -334,10 +516,165 @@
       '</div>',
       `<div class="mini-block full"><span>Plan</span><p>${htmlEscape(day.fuel || "Fuel before 180-200 km and never arrive at camp on reserve.")}</p></div>`,
       `<div class="mini-block full"><span>Stops</span>${listMarkup(day.fuelStops, "No named fuel stop in the card. Add one before riding this day.")}</div>`,
-      '<div class="action-grid compact">',
-      appActions(day, true),
-      '</div>'
+      '<div class="nearby-fuel-panel">',
+      '<div class="nearby-head"><span>Nearby petrol</span><button class="mini-command" type="button" data-nearby-fuel>Find near me</button></div>',
+      '<div id="nearby-fuel-list" class="nearby-list"></div>',
+      '</div>',
+      actionPanel(day, { compact: true, includeCamping: false })
     ].join("");
+    renderNearbyFuel();
+  }
+
+  function stationName(station) {
+    const tags = station.tags || {};
+    return clean(tags.name || tags.brand || tags.operator || "Petrol station");
+  }
+
+  function stationAddress(station) {
+    const tags = station.tags || {};
+    return clean([
+      tags["addr:street"],
+      tags["addr:housenumber"],
+      tags["addr:city"]
+    ].filter(Boolean).join(" "));
+  }
+
+  function haversineKm(a, b) {
+    const toRad = (value) => value * Math.PI / 180;
+    const earth = 6371;
+    const dLat = toRad(b.lat - a.lat);
+    const dLon = toRad(b.lon - a.lon);
+    const lat1 = toRad(a.lat);
+    const lat2 = toRad(b.lat);
+    const h = Math.sin(dLat / 2) ** 2
+      + Math.cos(lat1) * Math.cos(lat2) * Math.sin(dLon / 2) ** 2;
+    return 2 * earth * Math.asin(Math.sqrt(h));
+  }
+
+  function fuelSearchFallbackLink() {
+    if (!nearbyFuel.position) {
+      return "https://www.google.com/maps/search/petrol+station+near+me";
+    }
+    const { lat, lon } = nearbyFuel.position;
+    return `https://www.google.com/maps/search/petrol+station/@${lat},${lon},14z`;
+  }
+
+  function fuelStationMarkup(items, compact = false) {
+    if (nearbyFuel.status === "loading") {
+      return '<p class="app-muted">Searching nearby fuel...</p>';
+    }
+    if (nearbyFuel.status === "error") {
+      return [
+        `<p class="app-muted">${htmlEscape(nearbyFuel.message || "Could not load nearby petrol stations.")}</p>`,
+        `<a class="mini-link" target="_blank" rel="noopener" href="${fuelSearchFallbackLink()}">Search in Maps</a>`
+      ].join("");
+    }
+    if (nearbyFuel.status === "idle") {
+      return '<p class="app-muted">Use location to show petrol stations close to the bike.</p>';
+    }
+    if (!items.length) {
+      return [
+        '<p class="app-muted">No petrol stations found within 8 km.</p>',
+        `<a class="mini-link" target="_blank" rel="noopener" href="${fuelSearchFallbackLink()}">Search in Maps</a>`
+      ].join("");
+    }
+    const limit = compact ? 3 : 6;
+    return `<ul class="station-list">${items.slice(0, limit).map((station) => {
+      const point = { lat: station.lat || station.center?.lat, lon: station.lon || station.center?.lon };
+      const maps = `https://www.google.com/maps/search/?api=1&query=${point.lat},${point.lon}`;
+      const osm = `https://www.openstreetmap.org/?mlat=${point.lat}&mlon=${point.lon}#map=17/${point.lat}/${point.lon}`;
+      return [
+        '<li>',
+        '<div>',
+        `<strong>${htmlEscape(stationName(station))}</strong>`,
+        `<span>${station.distanceKm.toFixed(1)} km${stationAddress(station) ? " / " + htmlEscape(stationAddress(station)) : ""}</span>`,
+        '</div>',
+        '<div class="station-actions">',
+        `<a target="_blank" rel="noopener" href="${maps}">Maps</a>`,
+        `<a target="_blank" rel="noopener" href="${osm}">OSM</a>`,
+        '</div>',
+        '</li>'
+      ].join("");
+    }).join("")}</ul>`;
+  }
+
+  function renderNearbyFuel() {
+    const panel = document.getElementById("nearby-fuel-list");
+    const floating = document.getElementById("fuel-floating-content");
+    if (panel) panel.innerHTML = fuelStationMarkup(nearbyFuel.items);
+    if (floating) floating.innerHTML = fuelStationMarkup(nearbyFuel.items, true);
+    document.querySelectorAll("[data-nearby-fuel]").forEach((button) => {
+      button.disabled = nearbyFuel.status === "loading";
+      button.textContent = nearbyFuel.status === "loading" ? "Searching..." : "Find near me";
+    });
+  }
+
+  function overpassFuelQuery(position) {
+    const { lat, lon } = position;
+    return [
+      "[out:json][timeout:12];",
+      "(",
+      `node["amenity"="fuel"](around:${FUEL_SEARCH_RADIUS_METERS},${lat},${lon});`,
+      `way["amenity"="fuel"](around:${FUEL_SEARCH_RADIUS_METERS},${lat},${lon});`,
+      `relation["amenity"="fuel"](around:${FUEL_SEARCH_RADIUS_METERS},${lat},${lon});`,
+      ");",
+      "out center tags 24;"
+    ].join("");
+  }
+
+  function requestNearbyFuel() {
+    if (!navigator.geolocation) {
+      nearbyFuel.status = "error";
+      nearbyFuel.message = "Location is not available in this browser.";
+      renderNearbyFuel();
+      return;
+    }
+    nearbyFuel.status = "loading";
+    nearbyFuel.message = "";
+    renderNearbyFuel();
+    navigator.geolocation.getCurrentPosition((position) => {
+      const current = {
+        lat: Number(position.coords.latitude.toFixed(6)),
+        lon: Number(position.coords.longitude.toFixed(6))
+      };
+      nearbyFuel.position = current;
+      fetch(OVERPASS_ENDPOINT, {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8" },
+        body: `data=${encodeURIComponent(overpassFuelQuery(current))}`
+      })
+        .then((response) => {
+          if (!response.ok) throw new Error(`Fuel API ${response.status}`);
+          return response.json();
+        })
+        .then((data) => {
+          nearbyFuel.items = (data.elements || [])
+            .filter((item) => item.lat || item.center?.lat)
+            .map((item) => ({
+              ...item,
+              distanceKm: haversineKm(current, {
+                lat: item.lat || item.center.lat,
+                lon: item.lon || item.center.lon
+              })
+            }))
+            .sort((a, b) => a.distanceKm - b.distanceKm);
+          nearbyFuel.status = "ready";
+          renderNearbyFuel();
+        })
+        .catch(() => {
+          nearbyFuel.status = "error";
+          nearbyFuel.message = "Live fuel search is unavailable right now.";
+          renderNearbyFuel();
+        });
+    }, () => {
+      nearbyFuel.status = "error";
+      nearbyFuel.message = "Location permission is off.";
+      renderNearbyFuel();
+    }, {
+      enableHighAccuracy: false,
+      timeout: 9000,
+      maximumAge: 120000
+    });
   }
 
   function buildBottomNav() {
@@ -350,6 +687,22 @@
       `<a href="#settings" data-tab="settings">${icon("settings")}<span>Settings</span></a>`
     ].join("");
     document.body.appendChild(nav);
+  }
+
+  function buildFuelFloatingSheet() {
+    const sheet = document.createElement("aside");
+    sheet.id = "fuel-floating-sheet";
+    sheet.className = "fuel-floating-sheet";
+    sheet.setAttribute("aria-label", "Nearby petrol stations");
+    sheet.innerHTML = [
+      '<div class="fuel-floating-head">',
+      '<span>Nearby petrol</span>',
+      '<button class="mini-command" type="button" data-nearby-fuel>Find near me</button>',
+      '</div>',
+      '<div id="fuel-floating-content" class="nearby-list"></div>'
+    ].join("");
+    document.body.appendChild(sheet);
+    renderNearbyFuel();
   }
 
   function wireAppEvents() {
@@ -366,6 +719,10 @@
       if (event.target.closest("[data-prev-day]")) setCurrentDay(currentDay - 1);
       if (event.target.closest("[data-next-day]")) setCurrentDay(currentDay + 1);
       if (event.target.closest("[data-open-day]")) setCurrentDay(currentDay, { scrollCard: true });
+
+      if (event.target.closest("[data-nearby-fuel]")) {
+        requestNearbyFuel();
+      }
 
       if (event.target.closest("[data-keep-awake]") && typeof window.keepAwake === "function") {
         window.keepAwake();
@@ -387,25 +744,21 @@
   function updateActiveNav() {
     const hash = window.location.hash.replace("#", "");
     const active = hash === "fuel" ? "fuel" : hash === "settings" ? "settings" : "trip";
+    document.body.dataset.activeTab = active;
     document.querySelectorAll("[data-tab]").forEach((link) => {
       link.classList.toggle("is-active", link.dataset.tab === active);
     });
   }
 
-  function addOsmAndButtons() {
-    document.querySelectorAll("a[download][href$='.gpx']").forEach((link) => {
-      if (link.dataset.osmandEnhanced === "true") return;
-      const gpxHref = link.getAttribute("href");
-      const osmand = document.createElement("a");
-      osmand.className = "btn osmand";
-      osmand.href = gpxHref;
-      osmand.target = "_blank";
-      osmand.rel = "noopener";
-      osmand.textContent = "OsmAnd GPX";
-      osmand.title = "Open the local GPX file, then share or open it in OsmAnd.";
-      link.textContent = "Download GPX";
-      link.dataset.osmandEnhanced = "true";
-      link.parentNode.insertBefore(osmand, link);
+  function organizeDayCardActions() {
+    cards.forEach((card, index) => {
+      const actions = card.querySelector(".btns");
+      const day = days[index];
+      if (!actions || !day || actions.dataset.organized === "true") return;
+      const next = actions.querySelector('a.btn.full[href^="#day"]:not([style*="display:none"])')?.getAttribute("href");
+      actions.dataset.organized = "true";
+      actions.classList.add("organized-actions");
+      actions.innerHTML = actionPanel(day, { nextHref: next });
     });
   }
 
@@ -422,7 +775,7 @@
     panel.appendChild(actions);
   }
 
-  addOsmAndButtons();
+  organizeDayCardActions();
   addFullGpxButtons();
   buildAppShell();
 }());
