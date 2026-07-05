@@ -2,6 +2,12 @@
 
 This repository is set up to publish a mobile-first Progressive Web App from the `docs/` folder.
 
+User app URL, not the GitHub source-code page:
+
+`https://aureliendm.github.io/motorbike_trips/`
+
+Do not install from `https://github.com/AurelienDM/motorbike_trips` on iPhone. That is the repository page, so Add to Home Screen will install GitHub instead of the road book app.
+
 ## GitHub Pages setup
 
 1. Go to **Settings → Pages**.
