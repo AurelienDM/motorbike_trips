@@ -5,16 +5,7 @@
   const cards = Array.from(document.querySelectorAll(".card[id^='day']"));
   const THEME_KEY = "roadbookThemeMode";
   const DAY_KEY = "roadbookActiveDay";
-  const FUEL_SEARCH_RADIUS_METERS = 8000;
-  const OVERPASS_ENDPOINT = "https://overpass-api.de/api/interpreter";
   const TILE_SIZE = 256;
-
-  const nearbyFuel = {
-    status: "idle",
-    position: null,
-    items: [],
-    message: ""
-  };
 
   function htmlEscape(value) {
     return clean(value)
@@ -148,8 +139,9 @@
     };
   }
 
-  function realMapMarkup(day) {
+  function realMapMarkup(day, options = {}) {
     if (!day.coords.length) return "";
+    const className = clean(`real-map ${options.className || ""}`);
     const zoom = chooseMapZoom(day.coords);
     const center = coordsCenter(day.coords);
     const centerPx = worldPixel(center, zoom);
@@ -180,7 +172,7 @@
     }).join("")).join("");
 
     return [
-      '<div class="real-map" aria-label="Live OpenStreetMap route preview">',
+      `<div class="${htmlEscape(className)}" aria-label="Live OpenStreetMap route preview">`,
       `<div class="tile-grid">${tiles}</div>`,
       `<svg class="route-overlay" viewBox="0 0 768 768" aria-hidden="true"><polyline points="${routePoints}"/>${markers}</svg>`,
       '<a class="map-open" target="_blank" rel="noopener" href="' + htmlEscape(day.osm) + '">Open map</a>',
@@ -369,6 +361,59 @@
     });
   }
 
+  function cardMapPlaceholder(day, index) {
+    return [
+      `<div class="real-map card-real-map map-placeholder" data-card-map="${index}" role="img" aria-label="OpenStreetMap preview for ${htmlEscape(day.title)}">`,
+      '<div class="map-placeholder-inner">',
+      `${icon("map")}`,
+      '<strong>OpenStreetMap</strong>',
+      '<span>Loads when this day card is in view</span>',
+      '</div>',
+      '<a class="map-attribution" target="_blank" rel="noopener" href="https://www.openstreetmap.org/copyright">© OpenStreetMap</a>',
+      '</div>'
+    ].join("");
+  }
+
+  function loadCardMap(container) {
+    const index = Number(container.dataset.cardMap);
+    const day = days[index];
+    if (!day || container.dataset.loaded === "true") return;
+    container.dataset.loaded = "true";
+    container.outerHTML = realMapMarkup(day, { className: "card-real-map" });
+    const card = document.getElementById(day.id);
+    if (card) attachMapTileHandlers(card);
+  }
+
+  function installCardMaps() {
+    cards.forEach((card, index) => {
+      const day = days[index];
+      const mapbox = card.querySelector(".mapbox");
+      if (!day || !mapbox || mapbox.dataset.osmReady === "true") return;
+      mapbox.dataset.osmReady = "true";
+      mapbox.outerHTML = cardMapPlaceholder(day, index);
+      const caption = card.querySelector(".mapcaption");
+      if (caption) {
+        caption.textContent = "OpenStreetMap preview. Use Maps or GPX/OsmAnd for turn-by-turn navigation.";
+      }
+      card.querySelector(".maplegend")?.remove();
+    });
+
+    const placeholders = Array.from(document.querySelectorAll("[data-card-map]"));
+    if (!placeholders.length) return;
+    if (!("IntersectionObserver" in window)) {
+      placeholders.slice(0, 3).forEach(loadCardMap);
+      return;
+    }
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        observer.unobserve(entry.target);
+        loadCardMap(entry.target);
+      });
+    }, { rootMargin: "360px 0px" });
+    placeholders.forEach((placeholder) => observer.observe(placeholder));
+  }
+
   function buildAppShell() {
     if (!days.length || document.querySelector(".bottom-glass-nav")) return;
 
@@ -380,6 +425,7 @@
     buildSettingsPanel();
     buildBottomNav();
     buildFuelFloatingSheet();
+    installCardMaps();
     wireAppEvents();
     setTheme(themeMode);
     updateActiveNav();
@@ -517,164 +563,37 @@
       `<div class="mini-block full"><span>Plan</span><p>${htmlEscape(day.fuel || "Fuel before 180-200 km and never arrive at camp on reserve.")}</p></div>`,
       `<div class="mini-block full"><span>Stops</span>${listMarkup(day.fuelStops, "No named fuel stop in the card. Add one before riding this day.")}</div>`,
       '<div class="nearby-fuel-panel">',
-      '<div class="nearby-head"><span>Nearby petrol</span><button class="mini-command" type="button" data-nearby-fuel>Find near me</button></div>',
+      '<div class="nearby-head"><span>Fuel map</span></div>',
       '<div id="nearby-fuel-list" class="nearby-list"></div>',
       '</div>',
       actionPanel(day, { compact: true, includeCamping: false })
     ].join("");
-    renderNearbyFuel();
+    renderFuelShortcut();
   }
 
-  function stationName(station) {
-    const tags = station.tags || {};
-    return clean(tags.name || tags.brand || tags.operator || "Petrol station");
+  function fuelMapsLink() {
+    return "https://www.google.com/maps/search/petrol+station+near+me";
   }
 
-  function stationAddress(station) {
-    const tags = station.tags || {};
-    return clean([
-      tags["addr:street"],
-      tags["addr:housenumber"],
-      tags["addr:city"]
-    ].filter(Boolean).join(" "));
+  function appleFuelMapsLink() {
+    return "https://maps.apple.com/?q=petrol%20station";
   }
 
-  function haversineKm(a, b) {
-    const toRad = (value) => value * Math.PI / 180;
-    const earth = 6371;
-    const dLat = toRad(b.lat - a.lat);
-    const dLon = toRad(b.lon - a.lon);
-    const lat1 = toRad(a.lat);
-    const lat2 = toRad(b.lat);
-    const h = Math.sin(dLat / 2) ** 2
-      + Math.cos(lat1) * Math.cos(lat2) * Math.sin(dLon / 2) ** 2;
-    return 2 * earth * Math.asin(Math.sqrt(h));
-  }
-
-  function fuelSearchFallbackLink() {
-    if (!nearbyFuel.position) {
-      return "https://www.google.com/maps/search/petrol+station+near+me";
-    }
-    const { lat, lon } = nearbyFuel.position;
-    return `https://www.google.com/maps/search/petrol+station/@${lat},${lon},14z`;
-  }
-
-  function fuelStationMarkup(items, compact = false) {
-    if (nearbyFuel.status === "loading") {
-      return '<p class="app-muted">Searching nearby fuel...</p>';
-    }
-    if (nearbyFuel.status === "error") {
-      return [
-        `<p class="app-muted">${htmlEscape(nearbyFuel.message || "Could not load nearby petrol stations.")}</p>`,
-        `<a class="mini-link" target="_blank" rel="noopener" href="${fuelSearchFallbackLink()}">Search in Maps</a>`
-      ].join("");
-    }
-    if (nearbyFuel.status === "idle") {
-      return '<p class="app-muted">Use location to show petrol stations close to the bike.</p>';
-    }
-    if (!items.length) {
-      return [
-        '<p class="app-muted">No petrol stations found within 8 km.</p>',
-        `<a class="mini-link" target="_blank" rel="noopener" href="${fuelSearchFallbackLink()}">Search in Maps</a>`
-      ].join("");
-    }
-    const limit = compact ? 3 : 6;
-    return `<ul class="station-list">${items.slice(0, limit).map((station) => {
-      const point = { lat: station.lat || station.center?.lat, lon: station.lon || station.center?.lon };
-      const maps = `https://www.google.com/maps/search/?api=1&query=${point.lat},${point.lon}`;
-      const osm = `https://www.openstreetmap.org/?mlat=${point.lat}&mlon=${point.lon}#map=17/${point.lat}/${point.lon}`;
-      return [
-        '<li>',
-        '<div>',
-        `<strong>${htmlEscape(stationName(station))}</strong>`,
-        `<span>${station.distanceKm.toFixed(1)} km${stationAddress(station) ? " / " + htmlEscape(stationAddress(station)) : ""}</span>`,
-        '</div>',
-        '<div class="station-actions">',
-        `<a target="_blank" rel="noopener" href="${maps}">Maps</a>`,
-        `<a target="_blank" rel="noopener" href="${osm}">OSM</a>`,
-        '</div>',
-        '</li>'
-      ].join("");
-    }).join("")}</ul>`;
-  }
-
-  function renderNearbyFuel() {
-    const panel = document.getElementById("nearby-fuel-list");
-    const floating = document.getElementById("fuel-floating-content");
-    if (panel) panel.innerHTML = fuelStationMarkup(nearbyFuel.items);
-    if (floating) floating.innerHTML = fuelStationMarkup(nearbyFuel.items, true);
-    document.querySelectorAll("[data-nearby-fuel]").forEach((button) => {
-      button.disabled = nearbyFuel.status === "loading";
-      button.textContent = nearbyFuel.status === "loading" ? "Searching..." : "Find near me";
-    });
-  }
-
-  function overpassFuelQuery(position) {
-    const { lat, lon } = position;
+  function fuelShortcutMarkup(compact = false) {
     return [
-      "[out:json][timeout:12];",
-      "(",
-      `node["amenity"="fuel"](around:${FUEL_SEARCH_RADIUS_METERS},${lat},${lon});`,
-      `way["amenity"="fuel"](around:${FUEL_SEARCH_RADIUS_METERS},${lat},${lon});`,
-      `relation["amenity"="fuel"](around:${FUEL_SEARCH_RADIUS_METERS},${lat},${lon});`,
-      ");",
-      "out center tags 24;"
+      '<div class="fuel-shortcut">',
+      `<a class="action primary fuel-direct" target="_blank" rel="noopener" href="${fuelMapsLink()}">${icon("fuel")}<span>Fuel in Maps</span></a>`,
+      compact ? "" : `<a class="mini-link" target="_blank" rel="noopener" href="${appleFuelMapsLink()}">Apple Maps</a>`,
+      '<p class="app-muted">Opens a petrol-station search using the map app location context.</p>',
+      '</div>'
     ].join("");
   }
 
-  function requestNearbyFuel() {
-    if (!navigator.geolocation) {
-      nearbyFuel.status = "error";
-      nearbyFuel.message = "Location is not available in this browser.";
-      renderNearbyFuel();
-      return;
-    }
-    nearbyFuel.status = "loading";
-    nearbyFuel.message = "";
-    renderNearbyFuel();
-    navigator.geolocation.getCurrentPosition((position) => {
-      const current = {
-        lat: Number(position.coords.latitude.toFixed(6)),
-        lon: Number(position.coords.longitude.toFixed(6))
-      };
-      nearbyFuel.position = current;
-      fetch(OVERPASS_ENDPOINT, {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8" },
-        body: `data=${encodeURIComponent(overpassFuelQuery(current))}`
-      })
-        .then((response) => {
-          if (!response.ok) throw new Error(`Fuel API ${response.status}`);
-          return response.json();
-        })
-        .then((data) => {
-          nearbyFuel.items = (data.elements || [])
-            .filter((item) => item.lat || item.center?.lat)
-            .map((item) => ({
-              ...item,
-              distanceKm: haversineKm(current, {
-                lat: item.lat || item.center.lat,
-                lon: item.lon || item.center.lon
-              })
-            }))
-            .sort((a, b) => a.distanceKm - b.distanceKm);
-          nearbyFuel.status = "ready";
-          renderNearbyFuel();
-        })
-        .catch(() => {
-          nearbyFuel.status = "error";
-          nearbyFuel.message = "Live fuel search is unavailable right now.";
-          renderNearbyFuel();
-        });
-    }, () => {
-      nearbyFuel.status = "error";
-      nearbyFuel.message = "Location permission is off.";
-      renderNearbyFuel();
-    }, {
-      enableHighAccuracy: false,
-      timeout: 9000,
-      maximumAge: 120000
-    });
+  function renderFuelShortcut() {
+    const panel = document.getElementById("nearby-fuel-list");
+    const floating = document.getElementById("fuel-floating-content");
+    if (panel) panel.innerHTML = fuelShortcutMarkup();
+    if (floating) floating.innerHTML = fuelShortcutMarkup(true);
   }
 
   function buildBottomNav() {
@@ -696,13 +615,12 @@
     sheet.setAttribute("aria-label", "Nearby petrol stations");
     sheet.innerHTML = [
       '<div class="fuel-floating-head">',
-      '<span>Nearby petrol</span>',
-      '<button class="mini-command" type="button" data-nearby-fuel>Find near me</button>',
+      '<span>Fuel shortcut</span>',
       '</div>',
       '<div id="fuel-floating-content" class="nearby-list"></div>'
     ].join("");
     document.body.appendChild(sheet);
-    renderNearbyFuel();
+    renderFuelShortcut();
   }
 
   function wireAppEvents() {
@@ -719,10 +637,6 @@
       if (event.target.closest("[data-prev-day]")) setCurrentDay(currentDay - 1);
       if (event.target.closest("[data-next-day]")) setCurrentDay(currentDay + 1);
       if (event.target.closest("[data-open-day]")) setCurrentDay(currentDay, { scrollCard: true });
-
-      if (event.target.closest("[data-nearby-fuel]")) {
-        requestNearbyFuel();
-      }
 
       if (event.target.closest("[data-keep-awake]") && typeof window.keepAwake === "function") {
         window.keepAwake();

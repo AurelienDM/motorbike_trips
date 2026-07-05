@@ -934,30 +934,43 @@ button.action {
 }
 
 .more-actions {
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  background: var(--surface-solid);
-  overflow: hidden;
+  border: 0;
+  background: transparent;
+  overflow: visible;
 }
 
 .more-actions summary {
   align-items: center;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface-solid);
   cursor: pointer;
-  display: flex;
-  gap: 8px;
-  min-height: 46px;
-  padding: 0 12px;
+  display: inline-flex;
+  gap: 6px;
+  justify-self: end;
+  min-height: 34px;
+  padding: 0 10px;
   color: var(--muted);
+  font-size: 13px;
   font-weight: 900;
   list-style: none;
+  width: max-content;
 }
 
 .more-actions summary::-webkit-details-marker {
   display: none;
 }
 
+.more-actions summary svg {
+  height: 16px;
+  width: 16px;
+}
+
 .more-actions .action-grid {
-  border-top: 1px solid var(--line);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface-solid);
+  margin-top: 8px;
   padding: 8px;
 }
 
@@ -1015,6 +1028,53 @@ html[data-theme="night"] .mini-command {
 
 .nearby-list {
   min-width: 0;
+}
+
+.fuel-shortcut {
+  display: grid;
+  gap: 8px;
+}
+
+.fuel-shortcut .fuel-direct {
+  min-height: 58px;
+}
+
+.fuel-shortcut .mini-link {
+  justify-content: center;
+}
+
+.card-real-map {
+  height: clamp(180px, 42vw, 260px);
+}
+
+.map-placeholder {
+  display: grid;
+  place-items: center;
+}
+
+.map-placeholder-inner {
+  align-items: center;
+  display: grid;
+  gap: 5px;
+  justify-items: center;
+  padding: 18px;
+  text-align: center;
+}
+
+.map-placeholder-inner svg {
+  color: var(--accent);
+  height: 26px;
+  width: 26px;
+}
+
+.map-placeholder-inner strong {
+  color: var(--text);
+}
+
+.map-placeholder-inner span {
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 800;
 }
 
 .station-list {

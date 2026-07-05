@@ -1,13 +1,13 @@
-const CACHE_NAME = "ducati-alps-roadbook-v11";
+const CACHE_NAME = "ducati-alps-roadbook-v12";
 const OFFLINE_URL = "./index.html";
 
 const PRECACHE_URLS = [
   "./",
   "./index.html",
   "./app.css",
-  "./app.css?v=11",
+  "./app.css?v=12",
   "./app.js",
-  "./app.js?v=11",
+  "./app.js?v=12",
   "./manifest.webmanifest",
   "./icons/icon-180.png",
   "./icons/icon-192.png",
